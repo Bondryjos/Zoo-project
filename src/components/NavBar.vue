@@ -1,53 +1,120 @@
 <template>
 <v-app-bar height="80" color="#debc6f" scroll-behavior="elevate" id="inspire">
+  <v-app-bar-nav-icon class="d-md-none" variant="text" @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
     <v-img src="@/assets/Default_make_me_a_logo_for_an_online_zoo_website_3-removebg-preview.png"></v-img>
     <v-app-bar-title>Zoo Arcadia </v-app-bar-title>
     <v-spacer></v-spacer>
-    <v-menu transition="slide-x-transion">
+    <v-menu transition="slide-x-transion" open-on-hover>
         <template v-slot:activator="{props}">
-            <v-btn color="green" v-bind="props">Accueil <v-icon style="font-size: 36px;">mdi-chevron-down</v-icon></v-btn>
+          <router-link :to="{ path: '/' }" class="nav-link">
+            <v-btn class="d-none d-sm-flex" style="color:green" v-bind="props">Accueil<v-icon style="font-size: 36px;">mdi-chevron-down</v-icon></v-btn></router-link>
         </template>
         <v-list style="background-color:#debc6f;">
         <v-list-item>
-          <v-list-item-title>présentation du Zoo</v-list-item-title>
+          <router-link :to="{ path: '/présentation' }" class="nav-link">
+            <v-list-item-title style="color:green">Présentation du Zoo</v-list-item-title>
+          </router-link>
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-menu transition="slide-x-transion">
+    <v-menu transition="slide-x-transion" open-on-hover>
         <template v-slot:activator="{props}">
-            <v-btn color="green" v-bind="props">Service<v-icon style="font-size: 36px;">mdi-chevron-down</v-icon></v-btn>
+          <router-link :to="{ path: '/' }" class="nav-link">
+            <v-btn class="d-none d-sm-flex" style="color:green" v-bind="props">Service<v-icon style="font-size: 36px;">mdi-chevron-down</v-icon></v-btn></router-link>
         </template>
         <v-list style="background-color:#debc6f;">
         <v-list-item >
-          <v-list-item-title>Restauration</v-list-item-title>
-          <v-list-item-title>visite des habitats</v-list-item-title>
-          <v-list-item-title>Visite en train</v-list-item-title>
+          <router-link :to="{ path: '/restauration' }" class="nav-link">
+            <v-list-item-title style="color:green">Restauration</v-list-item-title>
+          </router-link>
+          <router-link :to="{ path: '/visitehabitat' }" class="nav-link">
+            <v-list-item-title style="color:green">visite des habitats</v-list-item-title>
+          </router-link>
+          <router-link :to="{ path: '/visitetrain' }" class="nav-link">
+            <v-list-item-title style="color:green">Visite en train</v-list-item-title>
+          </router-link>
         </v-list-item>
       </v-list>
     </v-menu>
-    <v-menu transition="slide-x-transion">
+    <v-menu transition="slide-x-transion" open-on-hover>
         <template v-slot:activator="{props}">
-            <v-btn color="green" v-bind="props">Habitat<v-icon style="font-size: 36px;">mdi-chevron-down</v-icon></v-btn>
+          <router-link :to="{ path: 'habitat' }" class="nav-link">
+            <v-btn class="d-none d-sm-flex" style="color:green" v-bind="props">Habitat<v-icon style="font-size: 36px;">mdi-chevron-down</v-icon></v-btn></router-link>
         </template>
         <v-list style="background-color:#debc6f;">
         <v-list-item>
-          <v-list-item-title>Savane</v-list-item-title>
-          <v-list-item-title>Jungle</v-list-item-title>
-          <v-list-item-title>Marais</v-list-item-title>
+          <router-link :to="{ path: '/savane' }" class="nav-link">
+            <v-list-item-title style="color:green">Savane</v-list-item-title>
+          </router-link>
+          <router-link :to="{ path: '/jungle' }" class="nav-link">
+            <v-list-item-title style="color:green">Jungle</v-list-item-title>
+          </router-link>
+          <router-link :to="{ path: '/marais' }" class="nav-link">
+            <v-list-item-title style="color:green">Marais</v-list-item-title>
+          </router-link>
         </v-list-item>
       </v-list>
     </v-menu>
     <v-menu transition="slide-x-transition">
       <template v-slot:activator="{props}">
-      <v-btn color="green" v-bind="props">Contact</v-btn>
+        <router-link :to="{ path: '/' }" class="nav-link">
+          <v-btn class="d-none d-sm-flex" style="color:green" v-bind="props">Contact</v-btn></router-link>
       </template>
     </v-menu>
-    <v-btn class="text-none expl mr-8" color="green" size="x-large" variant="flat" rounded="0">
-      Se connecter 
-    </v-btn>
+    <router-link :to="{ path: '/connexion' }" class="nav-link">
+      <v-btn class="text-none expl mr-8" color="green" size="x-large" variant="flat" rounded="0">Se connecter</v-btn></router-link>
 </v-app-bar>
+<v-navigation-drawer
+        v-model="drawer"
+        location="bottom"
+        temporary
+      >
+      <template v-for="item in items" :key="item">
+        <router-link :to="getLink(item)" class="nav-link">
+<v-list @click="scroll(item)" class="text-black">{{ item }}</v-list>
+        </router-link>
+      </template>
+      </v-navigation-drawer>
 
 </template>
 <script>
-
+export default {
+    
+    data: () => ({
+      drawer: false,
+      group: null,
+      items: [
+       'accueil','service','Habitat','contact'
+      ],
+    }),   
+    watch: {
+      group () {
+        this.drawer = false
+      },
+    },
+    methods: {
+      getLink(item) {
+      if (item === 'accueil') return '/';
+      if (item === 'service') return '/restauration';
+      if (item === 'Habitat') return '/habitat';
+      if (item === 'contact') return '/connexion';
+    },
+    
+      scroll(refName) {
+      const element = document.getElementById(refName);
+      element.scrollIntoView({ behavior: "smooth" });
+    },
+  },
+  }
 </script>
+<style scoped>
+
+.nav-link{
+  text-decoration: none;
+}
+.text-black{
+  color:green;
+}
+
+  
+</style>

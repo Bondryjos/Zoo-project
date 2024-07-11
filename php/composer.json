@@ -1,0 +1,17 @@
+{
+    "name": "zoo/project",
+    "require": {
+        "mongodb/mongodb": "1.19"
+    },
+    "autoload": {
+        "psr-4": {
+            "Mongodb\\Mongodb\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "bondry josué",
+            "email": "bonds972118@gmail.com"
+        }
+    ]
+}

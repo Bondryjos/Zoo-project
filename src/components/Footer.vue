@@ -13,7 +13,7 @@
           </v-col>
           <v-col cols="12" md="5" >
             <h2> Horaires d'ouverture</h2>
-            <span class="text-caption" v-for="(item,i) in horairesId" :key="i">{{ item.jours }}: {{ item. horaires_du_matin }} // {{ item.horaires_du_soir }}<br/></span>
+            <span class="text-caption" v-for="(item,i) in horaire" :key="i">{{ i }}: {{ item }}<br/></span>
            
           </v-col>
           
@@ -23,6 +23,30 @@
     </v-footer>
 </v-container>
 </template>
+<script setup>
+import axios from "axios";
+</script>
 <script>
-
+ export default {
+    data () {
+      return {
+      horaire: [],
+      }
+    },
+    mounted() {
+    this.fetchhoraire();
+  },
+    methods: {
+    fetchhoraire() {
+      axios.get('http://zoo-project.en.gp/php/horaire.php?action=get_horaire',{withcredentials: true})
+        .then(response => {
+          this.horaire = response.data;
+        console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+  },
+  }
 </script>

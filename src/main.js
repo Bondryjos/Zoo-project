@@ -13,8 +13,19 @@ import { createApp } from 'vue'
 // Plugins
 import { registerPlugins } from '@/plugins'
 
-const app = createApp(App)
+// Import WOW.js and animate.css
+import AOS from 'aos';
+import 'aos/dist/aos.css'; // You can also use <link> for styles
+// ..
 
+
+// Create the Vue app
+const app = createApp(App)
+app.use (AOS.init())
+// Register plugins
 registerPlugins(app)
 
-app.mount('#app')
+// Initialize WOW.js after mounting the app
+app.mount('#app', () => {
+
+})
