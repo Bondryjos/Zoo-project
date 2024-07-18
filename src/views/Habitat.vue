@@ -111,10 +111,52 @@
   </v-col>
 </v-row>
 <v-row class="justify-center">
-    <v-col cols="12" md="2"><v-btn><v-icon style="font-size: 36px;">mdi-map-marker-radius</v-icon>Habitat</v-btn></v-col>
-    <v-col cols="12" md="2"><v-btn><v-icon style="font-size: 36px;">mdi-paw</v-icon>Classe</v-btn></v-col>
-    <v-col cols="12" md="2"><v-btn><v-icon style="font-size: 36px;">mdi-magnify</v-icon>rechercher</v-btn></v-col>
-</v-row>
+  <v-col cols="12" md="2">
+<v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn
+          color="#8aa35a"
+          v-bind="props"
+        >
+          Habitat
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+          :value="index"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </v-col>
+  <v-col cols="12" md="2">
+    <v-menu>
+      <template v-slot:activator="{ props }">
+        <v-btn
+          color="#8aa35a"
+          v-bind="props"
+        >
+          Race
+        </v-btn>
+      </template>
+      <v-list>
+        <v-list-item
+          v-for="(item, index) in items"
+          :key="index"
+          :value="index"
+        >
+          <v-list-item-title>{{ item.title }}</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+    </v-col>
+    <v-col cols="12" md="2">
+    <v-btn color="#8aa35a"><v-icon style="font-size: 36px;">mdi-magnify</v-icon>rechercher</v-btn>
+  </v-col>
+  </v-row>
 <v-sheet
     class="mt-6 mx-auto"
     elevation="8"
@@ -192,6 +234,12 @@ import axios from "axios";
           'red lighten-2',
           'orange darken-1',
         ],
+        items: [
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me' },
+        { title: 'Click Me 2' },
+      ],
         slides: [
           'First',
           'Second',
@@ -203,6 +251,7 @@ import axios from "axios";
         habitats:[],
       detailsModal: false,
       selectedItem: null,
+      
       }
     },
     mounted() {
@@ -213,7 +262,7 @@ import axios from "axios";
 
       },
     fetchidanimal() {
-      axios.get('http://zoo-project.local/animaux.php?action=afficher_animaux',{withcredentials: true})
+      axios.get('http://zoo-project.en.gp/php/animaux.php?action=afficher_animaux',{withcredentials: true})
         .then(response => {
           this.idanimal = response.data;
         console.log(response.data);

@@ -151,7 +151,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo json_encode(array("status" => "error", "message" => "Requête invalide"));
     }
 }elseif ($action === "administration_animaux") {
-    $animal=$pdo->query("SELECT * FROM animal")->fetchAll(PDO::FETCH_ASSOC);
+    $animal = $pdo->query("SELECT * FROM animal")->fetchAll(PDO::FETCH_ASSOC);
+    $db = getDb();
+    $collection = $db->selectCollection('count_animal');
+
+    foreach ($animal as $index=>$value) {
+        $result = $collection->findOne(
+            ['animal' => (string)$value["idanimal"]]
+        );
+        $animal[$index]['nombre_visite']=(empty($result['nombre'])?0:$result['nombre']);
+    }
+
 
 
     die(json_encode(array(

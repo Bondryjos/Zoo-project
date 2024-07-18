@@ -60,73 +60,80 @@
                             <thead>
                                 <tr>
             <th class="text-left">
-              animal
+              titre_service
             </th>
             <th class="text-left">
-             mode de vie
+             Description
             </th>
             <th class="text-left">
-             race
+             image
             </th><th class="text-left">
              
-              gerer
+              type
             </th>
+            <th class="text-left">
+             
+             Action
+           </th>
           </tr>
                             </thead>
                             <v-divider></v-divider>
                             <tbody>
-                                <tr v-for="(item, index) in paginatedAnimalData" :key="index">
-                                    <td>{{ item.prenom }}</td>
-                                    <td>{{ item.mode_de_vie }}</td>
-                                    <td>{{ item.race }}</td>
+                                <tr v-for="(item, index) in paginatedServiceData" :key="index">
+                                    <td>{{ item.titre}}</td>
+                                    <td>{{ item.description}}</td>
+                                    <td>{{ item.idimage }}</td>
+                                    <td>{{ item.type}}</td>
                                     
                                     <td> 
-          <v-btn @click=" handleEditedAnimal(item)">voir</v-btn>
-          <v-btn @click="deleteanimal(item)">supprimer</v-btn></td>
+          <v-btn @click=" handleEditedService(item)">voir</v-btn>
+          <v-btn @click="deleteservice(item)">supprimer</v-btn></td>
                                 </tr>
                             </tbody>
-                            <v-dialog v-model="editDialog" max-width="500">
+                            <v-dialog v-model="editServiceDialog" max-width="500">
       <v-card>
         <v-card-title>
           Modifier l'élément
         </v-card-title>
+        <v-form  @submit.prevent=" modifyservice" id="Service" >
         <v-card-text>
-          <div>
-          <strong>nom :</strong> {{ editedItem.prenom }}
-         </div>
-         <div>
-         <strong>message :</strong> {{ editedItem.etat }}
-         </div>  
-         <div>
-         <strong>message :</strong> {{ editedItem.description }}
-         </div>  
-         <div>
-         <strong>message :</strong> {{ editedItem.mode_de_vie }}
-         </div> 
-         <div>
-         <strong>message :</strong> {{ editedItem.information }}
-         </div>  
-         <div>
-         <strong>message :</strong> {{ editedItem.Rapport_idRapport }}
-         </div>  
-         <div>
-         <strong>message :</strong> {{ editedItem.habitat_id_habitat }}
-         </div>  
-         <div>
-         <strong>message :</strong> {{ editedItem.race }}
-         </div>  
-         <div>
-         <strong>message :</strong> {{ editedItem.image }}
-         </div>        
+          <v-text-field v-model="editedService.titre" name="titre" label="titre"></v-text-field>
+          <v-text-field v-model="editedService.description" name="description" label="description"></v-text-field>
+          <v-text-field v-model="editedService.idimage" name="idimage" label="image"></v-text-field>
+          <v-text-field v-model="editedService.type" name="type" label="type"></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="saveEdit">Enregistrer</v-btn>
-          <v-btn @click="cancelEditAnimal">Annuler</v-btn>
+          <v-btn @click="modifyservice">modifier</v-btn>
+          <v-btn @click="cancelEditService">Annuler</v-btn>
         </v-card-actions>
+        <input type="hidden" name="idservice" :value="editedService.idservice"/>
+        </v-form>
       </v-card>
     </v-dialog>
                         </v-table>
-                        <v-pagination v-model="animalPageNumber" :length="7" @input="nextPage"></v-pagination>
+                        <v-pagination v-model="servicePageNumber" :length="7" @input="nextPage"></v-pagination>
+                        <v-btn @click="handleEditedService">ajouter</v-btn>
+  <v-dialog v-model="editServiceDialog" max-width="500">
+      <v-card>
+
+        <v-card-title>
+          Ajouter des services
+        </v-card-title>
+        <v-form   @submit.prevent="submitFormService" id="Service" class="mt-6">
+        <v-card-text>
+          <!-- Formulaire de modification -->
+          <v-text-field  label="titre" name="titre"></v-text-field>
+          <v-text-field  label="description" name="description"></v-text-field>
+          <v-text-field  label="idimage" name="idimage"></v-text-field>
+          <v-text-field  label="type" name="type"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="submitFormService">ajouter</v-btn>
+          <v-btn @click="cancelEditService">Annuler</v-btn>
+        </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -135,53 +142,73 @@
                             <v-table>
                                 <thead>
                                   <tr>
-                                        <th>Habitat</th>
-                                        <th>nom</th>
-                                        <th>description</th>
-                                        <th>commentaire</th>
-                                        <th>image</th>
+                                    <th>date</th>
+                                        <th>Nourriture</th>
+                                        <th>quantité</th>
+                                        <th>animal</th>
                                         <th>gérer</th>
                                     </tr>
                                 </thead>
                                 <v-divider></v-divider>
                                 <tbody>
-                                <tr v-for="(item, index) in paginatedHabitatData" :key="index">
-                                    <td>{{ item.nom }}</td>
-                                    <td>{{ item.description }}</td>
-                                    <td>{{ item.commentaire}}</td>
-                                    
+                                <tr v-for="(item, index) in paginatedNourritureData" :key="index">
+                                    <td>{{ item.date }}</td>
+                                    <td>{{ item.nourriture }}</td>
+                                    <td>{{ item.quantité}}</td>
+                                    <td>{{ item.animal_idanimal}}</td>
                                     <td>
-          <v-btn @click=" handleEditedHabitat(item)">voir</v-btn>
-          <v-btn @click="deletehabitat(item)">supprimer</v-btn></td>
+          <v-btn @click=" handleEditedNourriture(item)">voir</v-btn>
+          <v-btn @click="deletenourriture(item)">supprimer</v-btn></td>
                                 </tr>
                             </tbody>
-                            <v-dialog v-model="editDialog" max-width="500">
+                            <v-dialog v-model="editNourritureDialog" max-width="500">
       <v-card>
         <v-card-title>
           Modifier l'élément
         </v-card-title>
+        <v-form  @submit.prevent=" modifynourriture" id="Nourriture" >
         <v-card-text>
-          <div>
-          <strong>nom :</strong> {{ editedItem.nom }}
-         </div>
-         <div>
-         <strong>message :</strong> {{ editedItem.description }}
-         </div>  
-         <div>
-         <strong>message :</strong> {{ editedItem.commentaire }}
-         </div>       
+          <v-text-field v-model="editedNourriture.date" name="date" label="date"></v-text-field>
+          <v-text-field v-model="editedNourriture.nourriture" name="nourriture" label="nourriture"></v-text-field>
+          <v-text-field v-model="editedNourriture.quantité" name="quantité" label="quantité"></v-text-field>
+          <v-text-field v-model="editedNourriture.animal_idanimal" name="animal_idanimal" label="animal"></v-text-field>
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="saveEdit">Enregistrer</v-btn>
-          <v-btn @click="cancelEditHabitat">Annuler</v-btn>
+          <v-btn @click="modifynourriture">modifier</v-btn>
+          <v-btn @click="cancelEditNourriture">Annuler</v-btn>
         </v-card-actions>
+        <input type="hidden" name="idnourriture" :value="editedNourriture.idnourriture"/>
+        </v-form>
       </v-card>
     </v-dialog>
                             </v-table>
                             <v-pagination v-model="habitatPageNumber" :length="7" @input="nextPage"></v-pagination>
                         </v-card>
+                        <v-btn @click="handleEditedNourriture">ajouter</v-btn>
+  <v-dialog v-model="editVehiculesDialog" max-width="500">
+      <v-card>
+
+        <v-card-title>
+          Ajouter de la nourriture
+        </v-card-title>
+        <v-form   @submit.prevent="submitForm" id="Nourriture" class="mt-6">
+        <v-card-text>
+          <!-- Formulaire de modification -->
+          <v-text-field  label="date" name="date"></v-text-field>
+          <v-text-field  label="nourriture" name="nourriture"></v-text-field>
+          <v-text-field  label="quantité" name="quantité"></v-text-field>
+          <v-text-field  label="animal_idanimal" name="animal_idanimal"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="submitForm">ajouter</v-btn>
+          <v-btn @click="cancelEditNourriture">Annuler</v-btn>
+        </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
                     </v-col>
                 </v-row>
+               
                 
               </div>
             </template>
@@ -195,40 +222,41 @@
         data () {
         return {
           AvisData:[],
-          AnimalData:[],
-          HabitatData:[],
+          ServiceData:[],
+          NourritureData:[],
           pageNumber: 1,
-          animalPageNumber: 1,
-          habitatPageNumber: 1,
+          servicePageNumber: 1,
+          nourriturePageNumber: 1,
           size: 10,
           editDialog: false,
-          editHabitatDialog: false,
+          editNourritureDialog: false,
           editContactDialog: false,
-          editAnimalDialog:false,
+          editServiceDialog:false,
           editAddDialog:false,
           editedItem: {},
-          editedHabitat:{},
+          editedNourriture:{},
           editedContact:{},
-          editedAnimal:{},
+          editedService:{},
+          
         };
       },
       created(){
         this. VerifyAvis()
-        this. VerifyAnimal()
-        this. VerifyHabitat()
+        this. VerifyService()
+        this. VerifyNourriture()
     },computed: {
       pageCount() {
           let l = this.AvisData.length,
             s = this.size;
           return Math.ceil(l / s) - 1;
         },
-        animalPageCount() {
-        let l = this.AnimalData.length,
+        servicePageCount() {
+        let l = this.ServiceData.length,
           s = this.size;
         return Math.ceil(l / s) - 1;
       },
-      habitatPageCount() {
-        let l = this.HabitatData.length,
+      nourriturePageCount() {
+        let l = this.NourritureData.length,
           s = this.size;
         return Math.ceil(l / s) - 1;
       },
@@ -237,26 +265,26 @@
             end = start + this.size;
           return this.AvisData.slice(start, end);
         },
-        paginatedAnimalData() {
-          const start = this.animalPageNumber * this.size - this.size,
+        paginatedServiceData() {
+          const start = this.servicePageNumber * this.size - this.size,
             end = start + this.size;
-          return this.AnimalData.slice(start, end);
+          return this.ServiceData.slice(start, end);
         },
-        paginatedHabitatData() {
-          const start = this.habitatPageNumber * this.size - this.size,
+        paginatedNourritureData() {
+          const start = this.nourriturePageNumber * this.size - this.size,
             end = start + this.size;
-          return this.HabitatData.slice(start, end);
+          return this.NourritureData.slice(start, end);
         }
       },
       methods: {
         nextPage(page) {
           this.pageNumber = page;
         },
-        vehiculesNextPage(page) {
-        this.animalPageNumber = page;
+        serviceNextPage(page) {
+        this.servicePageNumber = page;
       },
       habitatNextPage(page) {
-        this.habitatPageNumber = page;
+        this.nourriturePageNumber = page;
       },
         async VerifyAvis(){
         try {
@@ -272,13 +300,13 @@
             console.error('Une erreur est survenu:', error);
           }
       },
-      async VerifyAnimal(){
+      async VerifyService(){
         try {
-            const response = await fetch('http://Zoo-project.local/animaux.php?action=administration_animaux',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.local/service.php?action=administration_service',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
-              this.AnimalData=data.animal;
+              this.ServiceData=data.service;
     
             }
           
@@ -286,20 +314,108 @@
             console.error('Une erreur est survenu:', error);
           }
       },
-      async VerifyHabitat(){
+      async VerifyNourriture(){
         try {
-            const response = await fetch('http://Zoo-project.local/habitat.php?action=administration_habitat',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.local/nourriture.php?action=administration_nourriture',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
-              this.HabitatData=data.habitat;
+              this.NourritureData=data.nourriture;
     
             }
           
           } catch (error) {
             console.error('Une erreur est survenu:', error);
           }
-      },
+      }, 
+      async  modifyservice() {
+  try {
+    const formData = new FormData(document.querySelector('#Horaires'));
+    const response = await fetch('http://Zoo-project.local/Service.php?action=modifier_service', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+
+    const responseData = await response.json();
+
+    console.log(responseData);
+
+    if (responseData.status) {
+      this.editServiceDialog=false;
+    } else {
+      console.log('Échec de l\'envoie');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la soumission du formulaire:', error);
+  }
+},  
+async  modifynourriture() {
+  try {
+    const formData = new FormData(document.querySelector('#Horaires'));
+    const response = await fetch('http://Zoo-project.local/nourriture.php?action=modifier_nourriture', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+
+    const responseData = await response.json();
+
+    console.log(responseData);
+
+    if (responseData.status) {
+      this.editNourritureDialog=false;
+    } else {
+      console.log('Échec de l\'envoie');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la soumission du formulaire:', error);
+  }
+}, 
+async  submitForm() {
+  try {
+    const formData = new FormData(document.querySelector('#Nourriture'));
+    const response = await fetch('/ecommerce-test/php/VehiculesAdmin.php', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+
+    const responseData = await response.json();
+
+    console.log(responseData);
+
+    if (responseData.status) {
+      this.editVehiculesDialog=false;
+    } else {
+      console.log('Échec de l\'envoie');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la soumission du formulaire:', error);
+  }
+}, 
+async  submitFormService() {
+  try {
+    const formData = new FormData(document.querySelector('#Nourriture'));
+    const response = await fetch('/ecommerce-test/php/VehiculesAdmin.php', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+
+    const responseData = await response.json();
+
+    console.log(responseData);
+
+    if (responseData.status) {
+      this.editVehiculesDialog=false;
+    } else {
+      console.log('Échec de l\'envoie');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la soumission du formulaire:', error);
+  }
+}, 
         editItem(item) {
           this.editDialog = true;
           this.editedItem = { ...item };
@@ -311,13 +427,13 @@
         cancelEdit() {
           this.editDialog = false;
         },
-        handleEditedHabitat(item) {
-          this.editHabitatDialog = true;
-          this.editedHabitat = { ...item };
-          console.log(this.EditedHabitat)
+        handleEditedNourriture(item) {
+          this.editNourritureDialog = true;
+          this.editedNourriture = { ...item };
+          console.log(this.EditedNourriture)
         },
-        cancelEditHabitat() {
-          this.editHabitatDialog = false;
+        cancelEditNourriture() {
+          this.editNourritureDialog = false;
         },
         handleEditedContact(item) {
           this.editContactDialog = true;
@@ -334,13 +450,13 @@
         cancelEditAdd() {
           this.editAddDialog = false;
         },
-        handleEditedAnimal(item) {
-          this.editAnimalDialog = true;
-          this.editedAnimal = { ...item };
-          console.log(this.editAnimal)
+        handleEditedService(item) {
+          this.editServiceDialog = true;
+          this.editedService = { ...item };
+          console.log(this.editService)
         },
-        cancelEditAnimal() {
-          this.editAnimalDialog = false;
+        cancelEditService() {
+          this.editServiceDialog = false;
         },
        async postavis(item){
           try {
@@ -384,6 +500,48 @@
             console.error('Une erreur est survenu:', error);
           }
         },
+        async deleteservice(item){
+      try {
+        const formData = new URLSearchParams();
+for (const key in item) {
+  formData.append(key, item[key]);
+}
+        const response = await fetch('http://Zoo-project.local/service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: formData.toString(),});
+       
+        const data = await response.json();
+        
+          this.VerifyService();
+
+       
+      
+      } catch (error) {
+        console.error('Une erreur est survenu:', error);
+      }
+    },
+    async deletenourriture(item){
+      try {
+        const formData = new URLSearchParams();
+for (const key in item) {
+  formData.append(key, item[key]);
+}
+        const response = await fetch('http://Zoo-project.local/nourriture.php?action=supprimer_nourriture',{credentials: 'include' ,method:"post",headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+  },
+  body: formData.toString(),});
+       
+        const data = await response.json();
+        
+          this.VerifyNourriture();
+
+       
+      
+      } catch (error) {
+        console.error('Une erreur est survenu:', error);
+      }
+    },
       },
     };
     </script>

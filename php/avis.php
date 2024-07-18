@@ -93,8 +93,8 @@ if ($_GET["action"] == "afficher_accueil") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
 
-        $stmt = $pdo->prepare("DELETE FROM avis  WHERE avis_id = ? ");
-        $stmt->execute([$_POST["avis_id"]]);
+        $stmt = $pdo->prepare("DELETE FROM avis  WHERE idavis = ? ");
+        $stmt->execute([$_POST["idavis"]]);
         
         if ($stmt->rowCount()) {
             echo json_encode(array("status" => "success", "message" => "Données du formulaire insérées avec succès"));

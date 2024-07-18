@@ -20,13 +20,59 @@
                             </thead>
                             <v-divider></v-divider>
                             <tbody>
-                                <tr>
-                                    <td>Lundi</td>
-                                    <td>8h-12h/14h-18h</td>
-                                    <td><v-btn>Modifier</v-btn></td>
+                                <tr v-for="(item, index) in paginatedAvisData" :key="index">
+                                    <td>{{ item.idavis }}</td>
+                                    <td>{{ item.nom }}</td>
+                                    <td>{{ item.description }}</td>
+                                    
+                                    <td> <v-btn @click="editItem(item)">Voir</v-btn>
+          <v-btn @click="postavis(item)">poster</v-btn>
+          <v-btn @click="deleteavis(item)">supprimer</v-btn></td>
                                 </tr>
                             </tbody>
+                            <v-dialog v-model="editDialog" max-width="500">
+      <v-card>
+        <v-card-title>
+          Modifier l'élément
+        </v-card-title>
+        <v-card-text>
+          <div>
+          <strong>nom :</strong> {{ editedItem.nom }}
+         </div>
+         <div>
+         <strong>message :</strong> {{ editedItem.description }}
+         </div>       
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="saveEdit">Enregistrer</v-btn>
+          <v-btn @click="cancelEdit">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
                         </v-table>
+                        <v-pagination v-model="pageNumber" :length="7" @input="nextPage"></v-pagination>
+                        <v-btn @click="handleEditedNourriture">ajouter</v-btn>
+  <v-dialog v-model="editVehiculesDialog" max-width="500">
+      <v-card>
+
+        <v-card-title>
+          Ajouter de la nourriture
+        </v-card-title>
+        <v-form   @submit.prevent="submitForm" id="Nourriture" class="mt-6">
+        <v-card-text>
+          <!-- Formulaire de modification -->
+          <v-text-field  label="date" name="date"></v-text-field>
+          <v-text-field  label="nourriture" name="nourriture"></v-text-field>
+          <v-text-field  label="quantité" name="quantité"></v-text-field>
+          <v-text-field  label="animal_idanimal" name="animal_idanimal"></v-text-field>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="submitForm">ajouter</v-btn>
+          <v-btn @click="cancelEditNourriture">Annuler</v-btn>
+        </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
                     </v-col>
                     <v-col cols="12" md="6">
                         <v-card>

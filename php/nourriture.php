@@ -6,22 +6,21 @@ header("Access-Control-Allow-Headers: *");
 
 require_once 'pdo.php';
 
-function getAllHabitatData(PDO $pdo)
+function getAllNourritureData(PDO $pdo)
 {
     try {
-        $query = $pdo->prepare("SELECT * FROM habitat ORDER BY idhabitat desc ".(isset($_GET["limit"]) ? 'LIMIT '.intval($_GET["limit"]): ''));
+        $query = $pdo->prepare("SELECT * FROM nourriture ORDER BY idnourriture desc ".(isset($_GET["limit"]) ? 'LIMIT '.intval($_GET["limit"]): ''));
         $query->execute();
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-    $habitat=[];
-        foreach ($result as $row) {
-            $habitat[$row['idhabitat']]=$row;
+    
+        foreach ($result as &$row) {
             if (empty($row['image'])) {
                 $row['image'] = '..\src\assets\Leonardo_Diffusion_XL_car_logo_in_orange_for_website_3.jpg';
             }
         }
 
-        return $habitat;
+        return $result;
     } catch (PDOException $e) {
         die('Erreur : ' . $e->getMessage());
     }
@@ -48,13 +47,12 @@ function getAllFilterData(PDO $pdo)
     } catch (PDOException $e) {
         die('Erreur : ' . $e->getMessage());
     }
-}
-$action=$_GET["action"];
-if ($_GET["action"] == "afficher_habitat") {
+}$action = isset($_GET["action"]) ? $_GET["action"] : null;
+if ($_GET["action"] == "afficher_nourriture") {
 if(isset($_GET["filter"])) {
     $data = getAllFilterData($pdo);
 } else {
-  $data = getAllHabitatData($pdo);
+  $data = getAllNourritureData($pdo);
 }
 
 header('Content-Type: application/json');
@@ -92,9 +90,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     
 } 
-} elseif ($action === "modifier_habitat") {
+} elseif ($action === "modifier_animaux") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (isset($_POST["idhabitat"])) {
+        if (isset($_POST["idanimal"])) {
             if ($_FILES["image"]["error"] > 0) {
                $image=null;
             } else {
@@ -139,8 +137,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
 
-        $stmt = $pdo->prepare("DELETE FROM vehicules  WHERE vehicules_id = ? ");
-        $stmt->execute([$_POST["vehicules_id"]]);
+        $stmt = $pdo->prepare("DELETE FROM animal  WHERE idanimal = ? ");
+        $stmt->execute([$_POST["idanimal"]]);
         
         if ($stmt->rowCount()) {
             echo json_encode(array("status" => "success", "message" => "Données du formulaire insérées avec succès"));
@@ -152,13 +150,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo json_encode(array("status" => "error", "message" => "Requête invalide"));
     }
-}elseif ($action === "administration_habitat") {
-    $habitat=$pdo->query("SELECT * FROM habitat")->fetchAll(PDO::FETCH_ASSOC);
+}elseif ($action === "administration_nourriture") {
+    $nourriture=$pdo->query("SELECT * FROM nourriture")->fetchAll(PDO::FETCH_ASSOC);
 
 
     die(json_encode(array(
         "status" => true,
-        "message" => "les habitats ont été récupéré",
-        "habitat" =>$habitat,
+        "message" => "la nourriture a été récupéré",
+        "nourriture" =>$nourriture,
      )));
+}elseif ($action === "count_animal") {
+    $db = getDb();
+    $animal = $pdo->query("SELECT count(*) FROM `animal` WHERE `idanimal` = ".intval($_GET["animal"]))->fetchColumn(0);  
+    $collection = $db->selectCollection('count_animal');
+    if ($animal==0){echo 'animal introuvable';}
+   else { $result = $collection->findOneAndUpdate(
+        ['animal' => $_GET["animal"]],
+        ['$inc' => ['nombre' => 1]],
+        [
+            'upsert' => true, 
+             ]
+    );
+    echo 'ok';}
 }
+
+ 
+

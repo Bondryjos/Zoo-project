@@ -1,5 +1,6 @@
 <?php
-header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Origin: http://zoo-project.local:4000");
+header('Access-Control-Allow-Credentials: true');
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 
@@ -91,9 +92,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     
 } 
-} elseif ($action === "modifier_animaux") {
+} elseif ($action === "modifier_service") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
-        if (isset($_POST["idanimal"])) {
+        if (isset($_POST["idservice"])) {
             if ($_FILES["image"]["error"] > 0) {
                $image=null;
             } else {
@@ -108,7 +109,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ;
             }
            
-            $stmt = $pdo->prepare("UPDATE animal SET `prenom` = ?,`image`
+            $stmt = $pdo->prepare("UPDATE service SET `prenom` = ?,`image`
              = COALESCE(?, image), `annee_mise_en_circulation` = ?, 
              `kilometrage` = ?, `titre` = ?, `description` = ? WHERE
               vehicules_id = ?");
@@ -134,12 +135,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo json_encode(array("status" => "error", "message" => "Requête invalide"));
     }
-} elseif ($action === "supprimer_animaux") {
+} elseif ($action === "supprimer_service") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
    
 
-        $stmt = $pdo->prepare("DELETE FROM vehicules  WHERE vehicules_id = ? ");
-        $stmt->execute([$_POST["vehicules_id"]]);
+        $stmt = $pdo->prepare("DELETE FROM service  WHERE idservice = ? ");
+        $stmt->execute([$_POST["idservice"]]);
         
         if ($stmt->rowCount()) {
             echo json_encode(array("status" => "success", "message" => "Données du formulaire insérées avec succès"));
@@ -151,13 +152,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         echo json_encode(array("status" => "error", "message" => "Requête invalide"));
     }
-}elseif ($action === "administration_animaux") {
-    $vehicules=$pdo->query("SELECT * FROM vehicules")->fetchAll(PDO::FETCH_ASSOC);
+}elseif ($action === "administration_service") {
+    $service=$pdo->query("SELECT * FROM service")->fetchAll(PDO::FETCH_ASSOC);
 
 
     die(json_encode(array(
         "status" => true,
         "message" => "les avis ont été récupéré",
-        "vehicules" =>$vehicules,
+        "service" =>$service,
      )));
 }

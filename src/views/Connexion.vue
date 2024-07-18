@@ -4,7 +4,7 @@
       <v-card max-width="350" class="mx-auto mt-16 mb-16" color="#72913a">
         <v-form @submit.prevent="submitForm" id="formulaire_de_connection">
           <v-card-title class="mb-12 text-center">Espace personnel</v-card-title>
-          <v-text-field v-model="email" name="email" label="Email"></v-text-field>
+          <v-text-field v-model="nom" name="nom" label="Nom"></v-text-field>
           <v-text-field v-model="mot_de_passe" name="mot_de_passe" label="Mot de passe" type="password"></v-text-field>
           <input type="hidden" name="loginUser" value="1">
           <v-btn type="submit" :color="'#8aa35a '">Se connecter</v-btn>
@@ -22,7 +22,7 @@ import Footer from "@/components/Footer.vue";
 export default {
   data() {
     return {
-      email:'',
+      nom:'',
       mot_de_passe:'',
     };
   },
