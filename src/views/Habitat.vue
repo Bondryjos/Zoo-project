@@ -112,49 +112,87 @@
 </v-row>
 <v-row class="justify-center">
   <v-col cols="12" md="2">
-<v-menu>
-      <template v-slot:activator="{ props }">
-        <v-btn
-          color="#8aa35a"
-          v-bind="props"
-        >
-          Habitat
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="(item, index) in items"
-          :key="index"
-          :value="index"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    <v-select
+    item-title="nom"
+    item-value="idhabitat"
+    v-model="selectedHabitat"
+    :items="habitat"
+    label="Favorite habitat"
+    multiple
+  >
+    <template v-slot:prepend-item>
+      <v-list-item
+        title="Select All"
+        @click="toggle"
+      >
+        <template v-slot:prepend>
+          <v-checkbox-btn
+            :color="likesSomeHabitat ? 'indigo-darken-4' : undefined"
+            :indeterminate="likesSomeHabitat && !likesAllHabitat"
+            :model-value="likesAllHabitat"
+          ></v-checkbox-btn>
+        </template>
+      </v-list-item>
+
+      <v-divider class="mt-2"></v-divider>
+    </template>
+
+    <template v-slot:append-item>
+      <v-divider class="mb-2"></v-divider>
+
+      <v-list-item
+        :subtitle="subtitle"
+        :title="title"
+        disabled
+      >
+        <template v-slot:prepend>
+          <v-avatar color="primary" icon="mdi-food-apple"></v-avatar>
+        </template>
+      </v-list-item>
+    </template>
+  </v-select>
   </v-col>
   <v-col cols="12" md="2">
-    <v-menu>
-      <template v-slot:activator="{ props }">
-        <v-btn
-          color="#8aa35a"
-          v-bind="props"
-        >
-          Race
-        </v-btn>
-      </template>
-      <v-list>
-        <v-list-item
-          v-for="(item, index) in items"
-          :key="index"
-          :value="index"
-        >
-          <v-list-item-title>{{ item.title }}</v-list-item-title>
-        </v-list-item>
-      </v-list>
-    </v-menu>
+    <v-select
+    v-model="selectedRace"
+    :items="race"
+    label="Favorite Race"
+    multiple
+  >
+    <template v-slot:prepend-item>
+      <v-list-item
+        title="Select All"
+        @click="toggleRace"
+      >
+        <template v-slot:prepend>
+          <v-checkbox-btn
+            :color="likesSomeRace ? 'indigo-darken-4' : undefined"
+            :indeterminate="likesSomeRace && !likesAllRace"
+            :model-value="likesAllRace"
+          ></v-checkbox-btn>
+        </template>
+      </v-list-item>
+
+      <v-divider class="mt-2"></v-divider>
+    </template>
+
+    <template v-slot:append-item>
+      <v-divider class="mb-2"></v-divider>
+
+      <v-list-item
+        :subtitle="subtitle"
+        :title="title"
+        disabled
+      >
+        <template v-slot:prepend>
+          <v-avatar color="primary" icon="mdi-food-apple"></v-avatar>
+        </template>
+      </v-list-item>
+    </template>
+  </v-select>
     </v-col>
     <v-col cols="12" md="2">
-    <v-btn color="#8aa35a"><v-icon style="font-size: 36px;">mdi-magnify</v-icon>rechercher</v-btn>
+    <v-btn color="#8aa35a" @click="fetchfilter"><v-icon style="font-size: 36px;">mdi-magnify</v-icon>rechercher</v-btn>
   </v-col>
   </v-row>
 <v-sheet
@@ -162,43 +200,40 @@
     elevation="8"
     max-width="1200"
   >
-    <v-slide-group
-      v-model="model"
-      class="pa-4"
-      selected-class="bg-success"
-      show-arrows
+  <v-slide-group>
+    <v-slide-group-item
+      v-for="item in idanimal"
+      :key="item.idanimal"
+      v-slot="{ isSelected, toggle, selectedClass }"
     >
-      <v-slide-group-item
-        v-for="n in 15"
-        :key="n"
-        v-slot="{ isSelected, toggle, selectedClass }"
-      >
       <v-card
         :class="['ma-4', selectedClass, 'd-flex', 'flex-column']"
         height="100"
         width="100"
         @click="toggle"
-        v-for="(item, index) in idanimal" :key="index"
-      ><router-link :to="{ path: '/'+(habitats[item.habitat_idhabitat]?habitats[item.habitat_idhabitat].nom:'')}" class="nav-link"><v-img
-         :src="item.image"
-         class="fill-height"
+      >
+        <router-link :to="{ path: '/'+(habitats[item.habitat_idhabitat] ? habitats[item.habitat_idhabitat].nom : '')}" class="nav-link">
+          <v-img
+            :src="item.image"
+            class="fill-height"
             style="object-fit: cover; height: 100%; width: 100%;"
-            
-        ></v-img> <h2>{{ item.prenom }}</h2></router-link>
-       
-          <div class="d-flex fill-height align-center justify-center">
-            <v-scale-transition>
-              <v-icon
-                v-if="isSelected"
-                color="white"
-                icon="mdi-close-circle-outline"
-                size="48"
-              ></v-icon>
-            </v-scale-transition>
-          </div>
-        </v-card>
-      </v-slide-group-item>
-    </v-slide-group>
+          ></v-img>
+          <h2>{{ item.prenom }}</h2>
+        </router-link>
+
+        <div class="d-flex fill-height align-center justify-center">
+          <v-scale-transition>
+            <v-icon
+              v-if="isSelected"
+              color="white"
+              icon="mdi-close-circle-outline"
+              size="48"
+            ></v-icon>
+          </v-scale-transition>
+        </div>
+      </v-card>
+    </v-slide-group-item>
+  </v-slide-group>
   </v-sheet>
   <v-row class="mt-6">
     <v-col cols="12" md="8">
@@ -227,13 +262,16 @@ import axios from "axios";
   export default {
     data () {
       return {
-        colors: [
+       colors: [
           'green',
           'secondary',
           'yellow darken-4',
           'red lighten-2',
           'orange darken-1',
         ],
+        habitat: [],
+        
+        race: [],
         items: [
         { title: 'Click Me' },
         { title: 'Click Me' },
@@ -247,6 +285,8 @@ import axios from "axios";
           'Fourth',
           'Fifth',
         ],
+        selectedHabitat: [],
+        selectedRace: [],
         idanimal: [],
         habitats:[],
       detailsModal: false,
@@ -256,10 +296,54 @@ import axios from "axios";
     },
     mounted() {
     this.fetchidanimal();
+    this.fetchhabitat();
+    this.fetchrace();
   },
+  computed: {
+      likesAllHabitat () {
+        return this.selectedHabitat.length === this.habitat.length
+      },
+      likesAllRace () {
+        return this.selectedRace.length === this.race.length
+      },
+      likesSomeHabitat () {
+        return this.selectedHabitat.length > 0
+      },
+      likesSomeRace () {
+        return this.selectedRace.length > 0
+      },
+      title () {
+        if (this.likesAllFruit) return 'Holy smokes, someone call the fruit police!'
+
+        if (this.likesSomeFruit) return 'Fruit Count'
+
+        return 'How could you not like fruit?'
+      },
+      subtitle () {
+        if (this.likesAllFruit) return undefined
+
+        if (this.likesSomeFruit) return this.selectedFruits.length
+
+        return 'Go ahead, make a selection above!'
+      },
+    },
     methods: {
       countanimal() {
 
+      },
+      toggle () {
+        if (this.likesAllHabitat) {
+          this.selectedHabitat = []
+        } else {
+          this.selectedHabitat = this.habitat.slice()
+        }
+      },
+      toggleRace () {
+        if (this.likesAllRace) {
+          this.selectedRace = []
+        } else {
+          this.selectedRace = this.race.slice()
+        }
       },
     fetchidanimal() {
       axios.get('http://zoo-project.en.gp/php/animaux.php?action=afficher_animaux',{withcredentials: true})
@@ -274,6 +358,43 @@ import axios from "axios";
         .then(response => {
           this.habitats = response.data;
         console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+    fetchhabitat() {
+      axios.get('http://zoo-project.local/habitat.php?action=get_habitat',{withcredentials: true})
+        .then(response => {
+          if (response.data && response.data.habitat) {
+            this.habitat = response.data.habitat;
+            console.log(response.data.habitat);
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+    fetchrace() {
+      axios.get('http://zoo-project.en.gp/php/animaux.php?action=get_race',{withcredentials: true})
+        .then(response => {
+          if (response.data && response.data.animal) {
+            const race = response.data.animal.map(item => item.race);
+            this.race =  Array.from(new Set(race));
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+    fetchfilter() {
+      var params='' ;
+      this.selectedHabitat.forEach(habitat => {params+='habitat[]='+habitat+'&'});
+      this.selectedRace.forEach(race => {params+='race[]='+race+'&'});
+      console.log(params);
+      axios.get('http://zoo-project.local/filtre.php?'+params,{withcredentials: true})
+        .then(response => {
+        this.idanimal=response.data;
         })
         .catch(error => {
           console.error('Error:', error);

@@ -6,6 +6,7 @@ header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
 require_once 'pdo.php';
+require_once 'session.php';
 
 function verifyUserLoginPassword(PDO $pdo, string $nom, string $mot_de_passe): array|bool {
     $query = $pdo->prepare("SELECT * FROM personel WHERE nom = :nom");
@@ -20,17 +21,6 @@ function verifyUserLoginPassword(PDO $pdo, string $nom, string $mot_de_passe): a
     }
 }
 
-session_set_cookie_params([
-    'lifetime' => 3600,
-    'path' => '/',
-    'domain' => _DOMAIN_,
-    'secure' => false,
-    'httponly' => true,
-   
-]);
-
-session_start();
-
 $action = isset($_GET["action"]) ? $_GET["action"] : null;
 
 if ($action === "login") {
@@ -44,6 +34,10 @@ if ($action === "login") {
             $_SESSION["user"] = $user;
             die(json_encode(array(
                 "status" => true,
+                "connecter" => isConnect(),
+                "veterinaire" => isVeterinaire(),
+                "employe" => isEmploye(),
+                "admin" => isAdmin(),
                 "message" => "Authentification réussie",
                 "session_id" => session_id()
             )));

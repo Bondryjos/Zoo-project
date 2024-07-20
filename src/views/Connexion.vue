@@ -45,9 +45,15 @@ fetch('http://Zoo-project.local/users.php?action=login', {
   .then(response => response.json())
   .then(data => {
     console.log(data);
-    if (data.status) {
+    if (data.admin) {
       this.$router.push('/admin');
-    } else {
+    }
+    else if (data.employe) {
+      this.$router.push('/employe');
+    } else if (data.veterinaire) {
+      this.$router.push('/vétérinaire');
+    }
+       else {
       console.log('Échec de la connexion');
     }
   })

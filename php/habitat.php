@@ -5,6 +5,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 
 require_once 'pdo.php';
+require_once 'session.php';
 
 function getAllHabitatData(PDO $pdo)
 {
@@ -153,6 +154,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo json_encode(array("status" => "error", "message" => "Requête invalide"));
     }
 }elseif ($action === "administration_habitat") {
+    $habitat=$pdo->query("SELECT * FROM habitat")->fetchAll(PDO::FETCH_ASSOC);
+
+
+    die(json_encode(array(
+        "status" => true,
+        "message" => "les habitats ont été récupéré",
+        "habitat" =>$habitat,
+     )));
+}elseif ($action === "get_habitat") {
     $habitat=$pdo->query("SELECT * FROM habitat")->fetchAll(PDO::FETCH_ASSOC);
 
 

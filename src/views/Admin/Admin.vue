@@ -361,6 +361,7 @@
         this. VerifyHabitat()
         this.fetchHoraires()
         this. VerifyPersonel()
+        this.VerifyConnection()
     },computed: {
       pageCount() {
           let l = this.ServiceData.length,
@@ -816,6 +817,24 @@ for (const key in item) {
         console.error('Une erreur est survenu:', error);
       }
     },
+    async VerifyConnection(){
+    try {
+        const response = await fetch
+        ('http://Zoo-project.local/verifier.php',
+        {credentials: 'include'});
+    
+        const data = await response.json();
+        if (data.connecter==false){
+          this.$router.push('/connexion');
+        }
+        if (data.admin==false){
+          this.$router.push('/connexion');
+        }
+        console.log('Retour: ', data);
+      } catch (error) {
+        console.error('Une erreur est survenu:', error);
+      }
+  },
       },
     };
     </script>

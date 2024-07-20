@@ -58,43 +58,50 @@
     elevation="8"
     max-width="1200"
   >
-    <v-slide-group
-      v-model="model"
-      class="pa-4"
-      selected-class="bg-success"
-      show-arrows
+  <v-slide-group>
+    <template
+    v-for="item in idanimal"
+      :key="item.idanimal">
+    <v-slide-group-item
+      
+      v-slot="{ isSelected, toggle, selectedClass }"
+      v-if="props.type==item.habitat_idhabitat"
     >
-      <v-slide-group-item
-        v-for="n in 15"
-        :key="n"
-        v-slot="{ isSelected, toggle, selectedClass }"
+      <v-card
+        :class="['ma-4', selectedClass, 'd-flex', 'flex-column']"
+        height="100"
+        width="100"
+        @click="toggle"
       >
-        <v-card
-          :class="['ma-4', selectedClass]"
-          color="grey-lighten-1"
-          height="200"
-          width="100"
-          @click="toggle"
-        ><v-img
-          src="../assets/Default_jungle_habitat_for_animals_0.jpg"
-         class="fill-height"
+          <v-img
+            :src="item.image"
+            class="fill-height"
             style="object-fit: cover; height: 100%; width: 100%;"
-        ></v-img>
-          <div class="d-flex fill-height align-center justify-center">
-            <v-scale-transition>
-              <v-icon
-                v-if="isSelected"
-                color="white"
-                icon="mdi-close-circle-outline"
-                size="48"
-              ></v-icon>
-            </v-scale-transition>
-          </div>
-        </v-card>
-      </v-slide-group-item>
-    </v-slide-group>
+          ></v-img>
+          <h2>{{ item.prenom }}</h2>
+
+        <div class="d-flex fill-height align-center justify-center">
+          <v-scale-transition>
+            <v-icon
+              v-if="isSelected"
+              color="white"
+              icon="mdi-close-circle-outline"
+              size="48"
+            ></v-icon>
+          </v-scale-transition>
+        </div>
+      </v-card>
+    </v-slide-group-item>
+  </template>
+  </v-slide-group>
   </v-sheet>
   </template>
+  <script setup>
+import axios from "axios";
+import { defineProps } from 'vue';
+const props = defineProps(['type']);
+console.log(props.type);
+</script>
   <script>
   export default {
     data () {
@@ -106,8 +113,25 @@
           'Fourth',
           'Fifth',
         ],
+        idanimal:[]
       }
     },
+    mounted() {
+    this.fetchidanimal();
+  },
+    methods: {
+    fetchidanimal() {
+      axios.get('http://zoo-project.en.gp/php/animaux.php?action=afficher_animaux',{withcredentials: true})
+        .then(response => {
+          this.idanimal= response.data;
+        console.log(response.data);
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+  },
+
   }
 </script>
   

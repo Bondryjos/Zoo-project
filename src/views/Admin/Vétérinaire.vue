@@ -132,3 +132,346 @@
     <script setup>
     import NavBarAdmin from '@/components/admin/NavBarAdmin.vue'
     </script>
+     <script>
+     export default {
+         data () {
+         return {
+           AvisData:[],
+           ServiceData:[],
+           NourritureData:[],
+           pageNumber: 1,
+           servicePageNumber: 1,
+           nourriturePageNumber: 1,
+           size: 10,
+           editDialog: false,
+           editNourritureDialog: false,
+           editContactDialog: false,
+           editServiceDialog:false,
+           editAddDialog:false,
+           editedItem: {},
+           editedNourriture:{},
+           editedContact:{},
+           editedService:{},
+           
+         };
+       },
+       created(){
+         this. VerifyAvis()
+         this. VerifyService()
+         this. VerifyNourriture()
+     },computed: {
+       pageCount() {
+           let l = this.AvisData.length,
+             s = this.size;
+           return Math.ceil(l / s) - 1;
+         },
+         servicePageCount() {
+         let l = this.ServiceData.length,
+           s = this.size;
+         return Math.ceil(l / s) - 1;
+       },
+       nourriturePageCount() {
+         let l = this.NourritureData.length,
+           s = this.size;
+         return Math.ceil(l / s) - 1;
+       },
+         paginatedAvisData() {
+           const start = this.pageNumber * this.size - this.size,
+             end = start + this.size;
+           return this.AvisData.slice(start, end);
+         },
+         paginatedServiceData() {
+           const start = this.servicePageNumber * this.size - this.size,
+             end = start + this.size;
+           return this.ServiceData.slice(start, end);
+         },
+         paginatedNourritureData() {
+           const start = this.nourriturePageNumber * this.size - this.size,
+             end = start + this.size;
+           return this.NourritureData.slice(start, end);
+         }
+       },
+       methods: {
+         nextPage(page) {
+           this.pageNumber = page;
+         },
+         serviceNextPage(page) {
+         this.servicePageNumber = page;
+       },
+       habitatNextPage(page) {
+         this.nourriturePageNumber = page;
+       },
+         async VerifyAvis(){
+         try {
+             const response = await fetch('http://Zoo-project.local/avis.php?action=avis_admin',{credentials: 'include'});
+         
+             const data = await response.json();
+             if (data.status==true){
+               this.AvisData=data.avis;
+     
+             }
+           
+           } catch (error) {
+             console.error('Une erreur est survenu:', error);
+           }
+       },
+       async VerifyService(){
+         try {
+             const response = await fetch('http://Zoo-project.local/service.php?action=administration_service',{credentials: 'include'});
+         
+             const data = await response.json();
+             if (data.status==true){
+               this.ServiceData=data.service;
+     
+             }
+           
+           } catch (error) {
+             console.error('Une erreur est survenu:', error);
+           }
+       },
+       async VerifyNourriture(){
+         try {
+             const response = await fetch('http://Zoo-project.local/nourriture.php?action=administration_nourriture',{credentials: 'include'});
+         
+             const data = await response.json();
+             if (data.status==true){
+               this.NourritureData=data.nourriture;
+     
+             }
+           
+           } catch (error) {
+             console.error('Une erreur est survenu:', error);
+           }
+       }, 
+       async  modifyservice() {
+   try {
+     const formData = new FormData(document.querySelector('#Horaires'));
+     const response = await fetch('http://Zoo-project.local/Service.php?action=modifier_service', {
+       method: 'POST',
+       credentials: 'include',
+       body: formData
+     });
+ 
+     const responseData = await response.json();
+ 
+     console.log(responseData);
+ 
+     if (responseData.status) {
+       this.editServiceDialog=false;
+     } else {
+       console.log('Échec de l\'envoie');
+     }
+   } catch (error) {
+     console.error('Erreur lors de la soumission du formulaire:', error);
+   }
+ },  
+ async  modifynourriture() {
+   try {
+     const formData = new FormData(document.querySelector('#Horaires'));
+     const response = await fetch('http://Zoo-project.local/nourriture.php?action=modifier_nourriture', {
+       method: 'POST',
+       credentials: 'include',
+       body: formData
+     });
+ 
+     const responseData = await response.json();
+ 
+     console.log(responseData);
+ 
+     if (responseData.status) {
+       this.editNourritureDialog=false;
+     } else {
+       console.log('Échec de l\'envoie');
+     }
+   } catch (error) {
+     console.error('Erreur lors de la soumission du formulaire:', error);
+   }
+ }, 
+ async  submitForm() {
+   try {
+     const formData = new FormData(document.querySelector('#Nourriture'));
+     const response = await fetch('/ecommerce-test/php/VehiculesAdmin.php', {
+       method: 'POST',
+       credentials: 'include',
+       body: formData
+     });
+ 
+     const responseData = await response.json();
+ 
+     console.log(responseData);
+ 
+     if (responseData.status) {
+       this.editVehiculesDialog=false;
+     } else {
+       console.log('Échec de l\'envoie');
+     }
+   } catch (error) {
+     console.error('Erreur lors de la soumission du formulaire:', error);
+   }
+ }, 
+ async  submitFormService() {
+   try {
+     const formData = new FormData(document.querySelector('#Nourriture'));
+     const response = await fetch('/ecommerce-test/php/VehiculesAdmin.php', {
+       method: 'POST',
+       credentials: 'include',
+       body: formData
+     });
+ 
+     const responseData = await response.json();
+ 
+     console.log(responseData);
+ 
+     if (responseData.status) {
+       this.editVehiculesDialog=false;
+     } else {
+       console.log('Échec de l\'envoie');
+     }
+   } catch (error) {
+     console.error('Erreur lors de la soumission du formulaire:', error);
+   }
+ }, 
+         editItem(item) {
+           this.editDialog = true;
+           this.editedItem = { ...item };
+         },
+         saveEdit() {
+           console.log('Enregistrer les modifications :', this.editedItem);
+           this.editDialog = false;
+         },
+         cancelEdit() {
+           this.editDialog = false;
+         },
+         handleEditedNourriture(item) {
+           this.editNourritureDialog = true;
+           this.editedNourriture = { ...item };
+           console.log(this.EditedNourriture)
+         },
+         cancelEditNourriture() {
+           this.editNourritureDialog = false;
+         },
+         handleEditedContact(item) {
+           this.editContactDialog = true;
+           this.editedContact = { ...item };
+           console.log(this.editContact)
+         },
+         cancelEditContact() {
+           this.editContactDialog = false;
+         },
+         handleEditedAdd(item) {
+           this.editAddDialog = true;
+         
+         },
+         cancelEditAdd() {
+           this.editAddDialog = false;
+         },
+         handleEditedService(item) {
+           this.editServiceDialog = true;
+           this.editedService = { ...item };
+           console.log(this.editService)
+         },
+         cancelEditService() {
+           this.editServiceDialog = false;
+         },
+        async postavis(item){
+           try {
+             const formData = new URLSearchParams();
+     for (const key in item) {
+       formData.append(key, item[key]);
+     }
+             const response = await fetch('http://Zoo-project.local/avis.php?action=verifier',{credentials: 'include' ,method:"post",headers: {
+         'Content-Type': 'application/x-www-form-urlencoded',
+       },
+       body: formData.toString(),});
+            
+             const data = await response.json();
+             
+               this.VerifyAvis();
+     
+            
+           
+           } catch (error) {
+             console.error('Une erreur est survenu:', error);
+           }
+         },
+         async deleteavis(item){
+           try {
+             const formData = new URLSearchParams();
+     for (const key in item) {
+       formData.append(key, item[key]);
+     }
+             const response = await fetch('http://Zoo-project.local/avis.php?action=delete_avis',{credentials: 'include' ,method:"post",headers: {
+         'Content-Type': 'application/x-www-form-urlencoded',
+       },
+       body: formData.toString(),});
+            
+             const data = await response.json();
+             
+               this.VerifyAvis();
+     
+            
+           
+           } catch (error) {
+             console.error('Une erreur est survenu:', error);
+           }
+         },
+         async deleteservice(item){
+       try {
+         const formData = new URLSearchParams();
+ for (const key in item) {
+   formData.append(key, item[key]);
+ }
+         const response = await fetch('http://Zoo-project.local/service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
+     'Content-Type': 'application/x-www-form-urlencoded',
+   },
+   body: formData.toString(),});
+        
+         const data = await response.json();
+         
+           this.VerifyService();
+ 
+        
+       
+       } catch (error) {
+         console.error('Une erreur est survenu:', error);
+       }
+     },
+     async deletenourriture(item){
+       try {
+         const formData = new URLSearchParams();
+ for (const key in item) {
+   formData.append(key, item[key]);
+ }
+         const response = await fetch('http://Zoo-project.local/nourriture.php?action=supprimer_nourriture',{credentials: 'include' ,method:"post",headers: {
+     'Content-Type': 'application/x-www-form-urlencoded',
+   },
+   body: formData.toString(),});
+        
+         const data = await response.json();
+         
+           this.VerifyNourriture();
+ 
+        
+       
+       } catch (error) {
+         console.error('Une erreur est survenu:', error);
+       }
+     },
+     async VerifyConnection(){
+     try {
+         const response = await fetch
+         ('http://Zoo-project.local/verifier.php',
+         {credentials: 'include'});
+     
+         const data = await response.json();
+         if (data.status==false){
+           this.$router.push('/connexion');
+         }
+         console.log('Retour: ', data);
+       } catch (error) {
+         console.error('Une erreur est survenu:', error);
+       }
+   },
+       },
+     };
+     </script>

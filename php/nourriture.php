@@ -5,6 +5,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 
 require_once 'pdo.php';
+require_once 'session.php';
 
 function getAllNourritureData(PDO $pdo)
 {

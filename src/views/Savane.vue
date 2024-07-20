@@ -1,6 +1,6 @@
 <template>
     <NavBar/> 
-    <Habitats/>
+    <Habitats type="1"/>
     <Footer/>
 </template>
 <script setup>

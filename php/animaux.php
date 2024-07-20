@@ -5,6 +5,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Headers: *");
 require 'vendor/autoload.php';
 require_once 'pdo.php';
+require_once 'session.php';
 
 function getAllAnimalData(PDO $pdo)
 {
@@ -25,29 +26,7 @@ function getAllAnimalData(PDO $pdo)
         die('Erreur : ' . $e->getMessage());
     }
 }
-function getAllFilterData(PDO $pdo)
-{
-    try {
-        $query = $pdo->prepare("SELECT * FROM `animal`
-         WHERE `prix` < :prix AND `kilometrage` < :kilometrage 
-         AND `annee_mise_en_circulation` < :annee_mise_en_circulation");
-        $query->execute([":prix" => $_GET["prix"], ":kilometrage" => 
-        $_GET["kilometrage"], ":annee_mise_en_circulation" => 
-        $_GET["annee"]]);
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
-
-    
-        foreach ($result as &$row) {
-            if (empty($row['image'])) {
-                $row['image'] = '..\src\assets\Leonardo_Diffusion_XL_car_logo_in_orange_for_website_3.jpg';
-            }
-        }
-
-        return $result;
-    } catch (PDOException $e) {
-        die('Erreur : ' . $e->getMessage());
-    }
-}$action = isset($_GET["action"]) ? $_GET["action"] : null;
+$action = isset($_GET["action"]) ? $_GET["action"] : null;
 if ($_GET["action"] == "afficher_animaux") {
 if(isset($_GET["filter"])) {
     $data = getAllFilterData($pdo);
@@ -182,6 +161,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
              ]
     );
     echo 'ok';}
+}elseif ($action === "get_race") {
+    $animal = $pdo->query("SELECT * FROM animal")->fetchAll(PDO::FETCH_ASSOC);
+
+    die(json_encode(array(
+        "status" => true,
+        "message" => "les races ont été récupéré",
+        "animal" =>$animal,
+     )));
 }
 
  
