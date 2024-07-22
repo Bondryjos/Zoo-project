@@ -288,7 +288,7 @@
       },
         async VerifyAvis(){
         try {
-            const response = await fetch('http://Zoo-project.local/avis.php?action=avis_admin',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=avis_admin',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
@@ -302,7 +302,7 @@
       },
       async VerifyService(){
         try {
-            const response = await fetch('http://Zoo-project.local/service.php?action=administration_service',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=administration_service',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
@@ -316,7 +316,7 @@
       },
       async VerifyNourriture(){
         try {
-            const response = await fetch('http://Zoo-project.local/nourriture.php?action=administration_nourriture',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.en.gp/php/nourriture.php?action=administration_nourriture',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
@@ -331,7 +331,7 @@
       async  modifyservice() {
   try {
     const formData = new FormData(document.querySelector('#Horaires'));
-    const response = await fetch('http://Zoo-project.local/Service.php?action=modifier_service', {
+    const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=modifier_service', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -353,7 +353,7 @@
 async  modifynourriture() {
   try {
     const formData = new FormData(document.querySelector('#Horaires'));
-    const response = await fetch('http://Zoo-project.local/nourriture.php?action=modifier_nourriture', {
+    const response = await fetch('http://Zoo-project.en.gp/php/nourriture.php?action=modifier_nourriture', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -464,7 +464,7 @@ async  submitFormService() {
     for (const key in item) {
       formData.append(key, item[key]);
     }
-            const response = await fetch('http://Zoo-project.local/avis.php?action=verifier',{credentials: 'include' ,method:"post",headers: {
+            const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=verifier',{credentials: 'include' ,method:"post",headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),});
@@ -485,7 +485,7 @@ async  submitFormService() {
     for (const key in item) {
       formData.append(key, item[key]);
     }
-            const response = await fetch('http://Zoo-project.local/avis.php?action=delete_avis',{credentials: 'include' ,method:"post",headers: {
+            const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=delete_avis',{credentials: 'include' ,method:"post",headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),});
@@ -506,7 +506,7 @@ async  submitFormService() {
 for (const key in item) {
   formData.append(key, item[key]);
 }
-        const response = await fetch('http://Zoo-project.local/service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
+        const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
   },
   body: formData.toString(),});
@@ -527,7 +527,7 @@ for (const key in item) {
 for (const key in item) {
   formData.append(key, item[key]);
 }
-        const response = await fetch('http://Zoo-project.local/nourriture.php?action=supprimer_nourriture',{credentials: 'include' ,method:"post",headers: {
+        const response = await fetch('http://Zoo-project.en.gp/php/nourriture.php?action=supprimer_nourriture',{credentials: 'include' ,method:"post",headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
   },
   body: formData.toString(),});
@@ -545,7 +545,7 @@ for (const key in item) {
     async VerifyConnection(){
     try {
         const response = await fetch
-        ('http://Zoo-project.local/verifier.php',
+        ('http://Zoo-project.en.gp/php/verifier.php',
         {credentials: 'include'});
     
         const data = await response.json();

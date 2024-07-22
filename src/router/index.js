@@ -68,9 +68,9 @@ const routes = [
         component: () => import(/* webpackChunkName: "login" */ '@/views/Admin/Employe.vue'),
       },
       {
-        path:'vétérinaire',
-        name:'Vétérinaire',
-        component: () => import(/* webpackChunkName: "login" */ '@/views/Admin/Vétérinaire.vue'),
+        path:'veterinaire',
+        name:'Veterinaire',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/Admin/Veterinaire.vue'),
       },
       ],
   },

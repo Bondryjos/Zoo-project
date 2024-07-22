@@ -169,7 +169,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         "message" => "les races ont été récupéré",
         "animal" =>$animal,
      )));
+}elseif ($action === "number_animal") {
+    $animal = $pdo->query("SELECT COUNT(*) as nombre,habitat.nom FROM `animal`,`habitat` WHERE habitat.idhabitat=animal.habitat_idhabitat GROUP BY habitat_idhabitat;")->fetchAll(PDO::FETCH_ASSOC);
+    $nombre=[];
+    foreach ($animal as $value){
+        $nombre[$value['nom']]=$value;
+    }
+    die(json_encode(array(
+        "status" => true,
+        "message" => "le nombre d'animal ont été récupéré",
+        "nombre" =>$nombre,
+     )));
 }
+if ($action === "ajouter_photo") {
+    if ($_FILES["image"]["error"] > 0) {
+        echo json_encode(array("status" => "error", "message" => "Erreur lors du téléchargement: " . $_FILES["image"]["error"]));
+    } else {
+        $uploadDirectory = "../src/assets/";
 
- 
+        $fileName = basename($_FILES["image"]["name"]); 
+        $image_top = "/src/assets/$fileName";
+        $destination = $uploadDirectory . $fileName;
+
+        if (move_uploaded_file($_FILES["image"]["tmp_name"], $destination)) {
+            try {
+                $stmt = $pdo->prepare("INSERT INTO image (image_top) VALUES (?)");
+                $stmt->execute([$image_top]);
+                $image_idimage = $pdo->lastInsertId();
+
+                $animal_idanimal = $_POST['idanimal'];
+                $stmt = $pdo->prepare("INSERT INTO image_has_animal (image_idimage, animal_idanimal) VALUES (?, ?)");
+                $stmt->execute([$image_idimage, $animal_idanimal]);
+
+                if ($stmt->rowCount()) {
+                    echo json_encode(array("status" => "success", "message" => "Données du formulaire insérées avec succès"));
+                } else {
+                    echo json_encode(array("status" => "error", "message" => "Erreur lors de l'insertion des données du formulaire."));
+                }
+            } catch (Exception $e) {
+                echo json_encode(array("status" => "error", "message" => "Erreur lors de l'insertion des données du formulaire: " . $e->getMessage()));
+            }
+        } else {
+            echo json_encode(array("status" => "error", "message" => "Erreur lors du déplacement du fichier téléchargé."));
+        }
+    }
+}
 

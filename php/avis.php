@@ -1,5 +1,5 @@
 <?php
-header("Access-Control-Allow-Origin: http://zoo-project.local:4000");
+header("Access-Control-Allow-Origin: http://zoo-project.en.gp");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
 header("Access-Control-Allow-Credentials: true");
 header("Access-Control-Allow-Headers: *");
@@ -15,7 +15,7 @@ if ($_GET["action"] == "afficher_accueil") {
     {
         try {
             $query = $pdo->prepare("SELECT * FROM avis Where `verification`
-            = 1 ORDER BY idavis desc limit 3 ");
+            = 1 ORDER BY idavis desc limit 8 ");
             $query->execute();
             $result = $query->fetchAll(PDO::FETCH_ASSOC);
 

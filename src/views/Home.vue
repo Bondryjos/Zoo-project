@@ -10,8 +10,8 @@ height="600"
 </v-img>
 </v-col>
 <v-col cols="12" md="6">
-<h2 class="text-center">Visiter notre Zoo</h2>
-<p class="mt-12" style="font-size: 20px ;"  data-aos="flip-right">Arcadia est un zoo situé en France près de la forêt de Brocéliande, en bretagne depuis 1960. 
+<h2 class="text-center"   style="font-family: 'Montserrat', sans-serif;">Visiter notre Zoo</h2>
+<p class="mt-12" style="font-size: 20px ;font-family: 'Fredoka',sans-serif;"  data-aos="flip-right">Arcadia est un zoo situé en France près de la forêt de Brocéliande, en bretagne depuis 1960. 
 Ils possèdent tout un panel d’animaux, réparti par habitat (savane, jungle, marais) et font 
 extrêmement attention à leurs santés. Chaque jour, plusieurs vétérinaires viennent afin 
 d’effectuer les contrôles sur chaque animal avant l’ouverture du zoo afin de s’assurer que tout 
@@ -91,17 +91,17 @@ directeur, José, qui a de grandes ambitions.</p>
           <h1 class="text-center">Les avis du zoo</h1>
           <v-sheet class="mx-auto" elevation="8" max-width="1250" color="#72913a">
             <v-slide-group v-model="model" class="pa-4" center-active show-arrows>
-              <v-slide-group-item v-for="travel in travels" :key="travel" v-slot="{isSelected, toggle}">
+              <v-slide-group-item v-for="(item,i) in avisId" :key="i" v-slot="{isSelected, toggle}">
                 <v-card :color="'#8aa35a '" class="ma-4" height="300" width="250" @click="toggle" flat data-aos="flip-left"
      data-aos-easing="ease-out-cubic"
      data-aos-duration="2000">
-                  <div class="d-flex fill-height align-center justify-center">
+                  <div>
                     <v-card-title>
-                      {{ travel.title }}
+                      {{ item.nom}}
                     </v-card-title>
                     <v-divider></v-divider>
                     <v-card-text>
-                      
+                      {{ item.description }}
                     </v-card-text>
                   </div>
                 </v-card>
@@ -161,6 +161,8 @@ directeur, José, qui a de grandes ambitions.</p>
     <span :style="{ backgroundColor: retouravistype=== true ? 'green' : (retouravistype=== false ? 'red' : 'blue') }">{{ retouravis }}</span> 
   </div>
 </v-form>
+<v-alert v-if="message" type="success">{{ message }}</v-alert>
+    <v-alert v-if="error" type="error">{{ error }}</v-alert>
         </v-card-text>
       </v-card>
     </v-bottom-sheet>
@@ -189,6 +191,8 @@ directeur, José, qui a de grandes ambitions.</p>
       ></v-text-field>
       <v-btn class="mt-2" type="submit" color="#72913a"block>Submit</v-btn>
     </v-form>
+    <v-alert v-if="message" type="success">{{ message }}</v-alert>
+    <v-alert v-if="error" type="error">{{ error }}</v-alert>
   </v-sheet>
 </v-col>
 <v-col cols="12" md="6">
@@ -214,6 +218,7 @@ export default {
   data() {
     return {
       sheet: false,
+      avisId: [],
       name: '',
         description: '',
         retouravis: '',
@@ -244,75 +249,8 @@ export default {
           vehicules_id: '2'
         }
         // Ajouter plus de données d'exemple si nécessaire
-      ]
-    };
-  },
-  mounted() {
-   // new WOW().init();
-  },
-  data: () => ({
-    tab: null,
-    model: null,
-    icons: ["mdi-rewind", "mdi-play", "mdi-fast-forward"],
-    transparent: "rgba(255, 255, 255, 0)",
-    rating: 4.5,
-    populars: [
-      {
-        image: "9.jpg",
-        title: " Enjoy The Beauty Place in Greece City",
-        subtitle1: "Greece",
-        subtitle2: "4 Day's 3 Night",
-        money: "$1200",
-      },
-      {
-        image: "10.jpg",
-        title: " Enjoy The Beauty Place in Maldivs Beach",
-        subtitle1: "Maldivs",
-        subtitle2: "5 Day's 4 Night",
-        money: "$1300",
-      },
-      {
-        image: "11.jpg",
-        title: " Enjoy The Beauty Place in Bhutan City",
-        subtitle1: "Bhutan",
-        subtitle2: "3 Day's 2 Night",
-        money: "$900",
-      },
-      {
-        image: "12.jpg",
-        title: " Enjoy The Beauty Place in Paris City",
-        subtitle1: "Paris",
-        subtitle2: "4 Day's 3 Night",
-        money: "$1700",
-      },
-    ],
-    offers: [
-      {
-        image: "i1.png",
-        title: " Different Coutries",
-      },
-      {
-        image: "i2.png",
-        title: " Bus Tours",
-      },
-      {
-        image: "i3.png",
-        title: " Food Tours",
-      },
-      {
-        image: "i4.png",
-        title: " Summer Rest",
-      },
-      {
-        image: "i5.png",
-        title: "Ship Cruises",
-      },
-      {
-        image: "i6.png",
-        title: "Mountains Tours",
-      },
-    ],
-    hotels: [
+      ],
+      hotels: [
       {
         image: "src/assets/Default_savannah_animal_habitat_0.jpg",
         title: " Enjoy The Beauty Place in Greece City",
@@ -336,33 +274,12 @@ export default {
       },
     ],
     animations: ['fade-right', 'fade-up', 'fade-left', 'fade-down'],
-    travels: [
-      {
-        title: " Jhon",
-      },
-      {
-        title: " Sylvie",
-      },
-      {
-        title: "Théo",
-      },
-      {
-        title: " Greg",
-      },
-      {
-        title: " Alphonse",
-      },
-      {
-        title: "Jean",
-      },
-      {
-        title: "émilie",
-      },
-      {
-        title: "Mathilde",
-      },
-    ],
-}),
+    };
+  },
+  mounted() {
+    this.fetchAvis();
+   // new WOW().init();
+  },
 methods: {
     openDetailsModal(index) {
       this.selectedItem = this.sampleData[index];
@@ -371,10 +288,19 @@ methods: {
     closeDetailsModal() {
       this.detailsModal = false;
     },
+    fetchAvis() {
+      axios.get('http://Zoo-project.en.gp/php/avis.php?action=afficher_accueil',{withcredentials: true})
+        .then(response => {
+          this.avisId = response.data;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
     submitForm() {
       
 
-      axios.post('http://Zoo-project.local/avis.php?action=envoyer', document.querySelector('#Avis_users'),{withcredentials: true})
+      axios.post('http://Zoo-project.en.gp/php/avis.php?action=envoyer', document.querySelector('#Avis_users'),{withcredentials: true})
         .then(response => {
         this.retouravis=response.data.message;
         this.retouravistype=response.data.status==='success'?true:false;

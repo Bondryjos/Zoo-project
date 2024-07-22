@@ -8,25 +8,26 @@
                             <thead>
                                 <tr>
             <th class="text-left">
-              Jours
+              id rapport
             </th>
             <th class="text-left">
-              Horaires
+              date
             </th>
             <th class="text-left">
-              Modifier
+             details
+            </th>
+            <th class="text-left">
+             gerer
             </th>
           </tr>
                             </thead>
                             <v-divider></v-divider>
                             <tbody>
-                                <tr v-for="(item, index) in paginatedAvisData" :key="index">
-                                    <td>{{ item.idavis }}</td>
-                                    <td>{{ item.nom }}</td>
-                                    <td>{{ item.description }}</td>
-                                    
-                                    <td> <v-btn @click="editItem(item)">Voir</v-btn>
-          <v-btn @click="postavis(item)">poster</v-btn>
+                                <tr v-for="(item, index) in paginatedRapportData" :key="index">
+                                    <td>{{ item.idRapport }}</td>
+                                    <td>{{ item.date }}</td>
+                                    <td>{{ item.details }}</td>
+                                    <td> <v-btn @click="handleEditedRapport(item)">Voir</v-btn>
           <v-btn @click="deleteavis(item)">supprimer</v-btn></td>
                                 </tr>
                             </tbody>
@@ -37,34 +38,52 @@
         </v-card-title>
         <v-card-text>
           <div>
-          <strong>nom :</strong> {{ editedItem.nom }}
+          <strong>nom :</strong> {{ editedRapport.idRapport }}
          </div>
          <div>
-         <strong>message :</strong> {{ editedItem.description }}
+         <strong>message :</strong> {{ editedRapport.date }}
+         </div> 
+         <div>
+         <strong>message :</strong> {{ editedRapport.details }}
          </div>       
+         <div>
+         <strong>message :</strong> {{ editedRapport.animal_idanimal }}
+         </div>       
+         <div>
+         <strong>message :</strong> {{ editedRapport.etat }}
+         </div> 
+         <div>
+         <strong>message :</strong> {{ editedRapport.nourriture }}
+         </div>  
+         <div>
+         <strong>message :</strong> {{ editedRapport.grammage }}
+         </div>              
         </v-card-text>
         <v-card-actions>
-          <v-btn @click="saveEdit">Enregistrer</v-btn>
+          <v-btn @click="saveEdit">Modifier</v-btn>
           <v-btn @click="cancelEdit">Annuler</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
                         </v-table>
                         <v-pagination v-model="pageNumber" :length="7" @input="nextPage"></v-pagination>
-                        <v-btn @click="handleEditedNourriture">ajouter</v-btn>
-  <v-dialog v-model="editVehiculesDialog" max-width="500">
+                        <v-btn @click="handleEditedRapport">ajouter</v-btn>
+  <v-dialog v-model="editRapportDialog" max-width="500">
       <v-card>
 
         <v-card-title>
-          Ajouter de la nourriture
+          Ajouter le rapport
         </v-card-title>
         <v-form   @submit.prevent="submitForm" id="Nourriture" class="mt-6">
         <v-card-text>
           <!-- Formulaire de modification -->
+          <v-text-field  label="idRapport" name="idRapport"></v-text-field>
           <v-text-field  label="date" name="date"></v-text-field>
-          <v-text-field  label="nourriture" name="nourriture"></v-text-field>
-          <v-text-field  label="quantité" name="quantité"></v-text-field>
+          <v-text-field  label="details" name="details"></v-text-field>
           <v-text-field  label="animal_idanimal" name="animal_idanimal"></v-text-field>
+          <v-text-field  label="etat " name="etat "></v-text-field>
+          <v-text-field  label="nourriture" name="nourriture"></v-text-field>
+          <v-text-field  label="grammage" name="grammage"></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-btn @click="submitForm">ajouter</v-btn>
@@ -75,53 +94,55 @@
     </v-dialog>
                     </v-col>
                     <v-col cols="12" md="6">
-                        <v-card>
-                        <v-table>
-                            <thead>
-                                <tr>
-            <th class="text-left">
-              animal
-            </th>
-            <th class="text-left">
-              Nombre de visite
-            </th>
-          </tr>
-                            </thead>
-                            <v-divider></v-divider>
-                            <tbody>
-                                <tr>
-                                    <td>diego</td>
-                                    <td> 4000 visite</td>
-                                </tr>
-                            </tbody>
-                        </v-table>
-                    </v-card>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col cols="12" >
-                        <v-card>
+                      <v-card>
                             <v-table>
                                 <thead>
-                                    <tr>
-                                        <th>service</th>
-                                        <th>titre</th>
-                                        <th>description</th>
-                                        <th>image</th>
+                                  <tr>
+                                    <th>date</th>
+                                        <th>Nourriture</th>
+                                        <th>quantité</th>
+                                        <th>animal</th>
                                         <th>gérer</th>
                                     </tr>
                                 </thead>
                                 <v-divider></v-divider>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Zoo</td>
-                                    <td>bienvenur dans notre zoo nous sommes heureux de vous présenter </td>
-                                    <td>image1</td>
-                                    <td><v-btn>voir</v-btn> <v-btn>supprimer</v-btn>  <v-btn>Ajouter</v-btn></td>
+                                <tbody>
+                                <tr v-for="(item, index) in paginatedNourritureData" :key="index">
+                                    <td>{{ item.date }}</td>
+                                    <td>{{ item.nourriture }}</td>
+                                    <td>{{ item.quantité}}</td>
+                                    <td>{{ item.animal_idanimal}}</td>
+                                    
+        <td>  <v-btn @click=" handleEditedNourriture(item)">voir</v-btn></td>
                                 </tr>
                             </tbody>
+                            <v-dialog v-model="editNourritureDialog" max-width="500">
+      <v-card>
+        <v-card-title>
+          Modifier l'élément
+        </v-card-title>
+        
+        <v-card-text>
+          <div>
+          <strong>nom :</strong> {{  editedNourriture.date }}
+         </div>
+         <div>
+         <strong>message :</strong> {{  editedNourriture.nourriture }}
+         </div>
+         <div>
+         <strong>note :</strong> {{  editedNourriture.quantité }}
+         </div>
+         <div>
+         <strong>note :</strong> {{ editedNourriture.animal_idanimal}}
+         </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="cancelEditNourriture">Annuler</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
                             </v-table>
+                            <v-pagination v-model="habitatPageNumber" :length="7" @input="nextPage"></v-pagination>
                         </v-card>
                     </v-col>
                 </v-row>
@@ -137,27 +158,27 @@
          data () {
          return {
            AvisData:[],
-           ServiceData:[],
+           RapportData:[],
            NourritureData:[],
            pageNumber: 1,
-           servicePageNumber: 1,
+           rapportPageNumber: 1,
            nourriturePageNumber: 1,
            size: 10,
            editDialog: false,
            editNourritureDialog: false,
-           editContactDialog: false,
+           editRapportDialog: false,
            editServiceDialog:false,
            editAddDialog:false,
            editedItem: {},
            editedNourriture:{},
            editedContact:{},
-           editedService:{},
+           editedRapport:{},
            
          };
        },
        created(){
          this. VerifyAvis()
-         this. VerifyService()
+         this. VerifyRapport()
          this. VerifyNourriture()
      },computed: {
        pageCount() {
@@ -166,7 +187,7 @@
            return Math.ceil(l / s) - 1;
          },
          servicePageCount() {
-         let l = this.ServiceData.length,
+         let l = this.RapportData.length,
            s = this.size;
          return Math.ceil(l / s) - 1;
        },
@@ -180,10 +201,10 @@
              end = start + this.size;
            return this.AvisData.slice(start, end);
          },
-         paginatedServiceData() {
-           const start = this.servicePageNumber * this.size - this.size,
+         paginatedRapportData() {
+           const start = this.rapportPageNumber * this.size - this.size,
              end = start + this.size;
-           return this.ServiceData.slice(start, end);
+           return this.RapportData.slice(start, end);
          },
          paginatedNourritureData() {
            const start = this.nourriturePageNumber * this.size - this.size,
@@ -196,14 +217,14 @@
            this.pageNumber = page;
          },
          serviceNextPage(page) {
-         this.servicePageNumber = page;
+         this.rapportPageNumber = page;
        },
        habitatNextPage(page) {
          this.nourriturePageNumber = page;
        },
          async VerifyAvis(){
          try {
-             const response = await fetch('http://Zoo-project.local/avis.php?action=avis_admin',{credentials: 'include'});
+             const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=avis_admin',{credentials: 'include'});
          
              const data = await response.json();
              if (data.status==true){
@@ -215,13 +236,13 @@
              console.error('Une erreur est survenu:', error);
            }
        },
-       async VerifyService(){
+       async VerifyRapport(){
          try {
-             const response = await fetch('http://Zoo-project.local/service.php?action=administration_service',{credentials: 'include'});
+             const response = await fetch('http://Zoo-project.en.gp/php/rapport.php?action=administration_rapport',{credentials: 'include'});
          
              const data = await response.json();
              if (data.status==true){
-               this.ServiceData=data.service;
+               this.RapportData=data.rapport;
      
              }
            
@@ -231,7 +252,7 @@
        },
        async VerifyNourriture(){
          try {
-             const response = await fetch('http://Zoo-project.local/nourriture.php?action=administration_nourriture',{credentials: 'include'});
+             const response = await fetch('http://Zoo-project.en.gp/php/nourriture.php?action=administration_nourriture',{credentials: 'include'});
          
              const data = await response.json();
              if (data.status==true){
@@ -246,7 +267,7 @@
        async  modifyservice() {
    try {
      const formData = new FormData(document.querySelector('#Horaires'));
-     const response = await fetch('http://Zoo-project.local/Service.php?action=modifier_service', {
+     const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=modifier_service', {
        method: 'POST',
        credentials: 'include',
        body: formData
@@ -264,29 +285,7 @@
    } catch (error) {
      console.error('Erreur lors de la soumission du formulaire:', error);
    }
- },  
- async  modifynourriture() {
-   try {
-     const formData = new FormData(document.querySelector('#Horaires'));
-     const response = await fetch('http://Zoo-project.local/nourriture.php?action=modifier_nourriture', {
-       method: 'POST',
-       credentials: 'include',
-       body: formData
-     });
- 
-     const responseData = await response.json();
- 
-     console.log(responseData);
- 
-     if (responseData.status) {
-       this.editNourritureDialog=false;
-     } else {
-       console.log('Échec de l\'envoie');
-     }
-   } catch (error) {
-     console.error('Erreur lors de la soumission du formulaire:', error);
-   }
- }, 
+ },   
  async  submitForm() {
    try {
      const formData = new FormData(document.querySelector('#Nourriture'));
@@ -350,13 +349,13 @@
          cancelEditNourriture() {
            this.editNourritureDialog = false;
          },
-         handleEditedContact(item) {
-           this.editContactDialog = true;
-           this.editedContact = { ...item };
-           console.log(this.editContact)
+         handleEditedRapport(item) {
+           this.editRapportDialog = true;
+           this.editedRapport = { ...item };
+           console.log(this.editRapport)
          },
-         cancelEditContact() {
-           this.editContactDialog = false;
+         cancelEditRapport() {
+           this.editRapportDialog = false;
          },
          handleEditedAdd(item) {
            this.editAddDialog = true;
@@ -379,7 +378,7 @@
      for (const key in item) {
        formData.append(key, item[key]);
      }
-             const response = await fetch('http://Zoo-project.local/avis.php?action=verifier',{credentials: 'include' ,method:"post",headers: {
+             const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=verifier',{credentials: 'include' ,method:"post",headers: {
          'Content-Type': 'application/x-www-form-urlencoded',
        },
        body: formData.toString(),});
@@ -400,7 +399,7 @@
      for (const key in item) {
        formData.append(key, item[key]);
      }
-             const response = await fetch('http://Zoo-project.local/avis.php?action=delete_avis',{credentials: 'include' ,method:"post",headers: {
+             const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=delete_avis',{credentials: 'include' ,method:"post",headers: {
          'Content-Type': 'application/x-www-form-urlencoded',
        },
        body: formData.toString(),});
@@ -421,7 +420,7 @@
  for (const key in item) {
    formData.append(key, item[key]);
  }
-         const response = await fetch('http://Zoo-project.local/service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
+         const response = await fetch('http://Zoo-project.en.gp/php/service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
      'Content-Type': 'application/x-www-form-urlencoded',
    },
    body: formData.toString(),});
@@ -442,7 +441,7 @@
  for (const key in item) {
    formData.append(key, item[key]);
  }
-         const response = await fetch('http://Zoo-project.local/nourriture.php?action=supprimer_nourriture',{credentials: 'include' ,method:"post",headers: {
+         const response = await fetch('http://Zoo-project.en.gp/php/nourriture.php?action=supprimer_nourriture',{credentials: 'include' ,method:"post",headers: {
      'Content-Type': 'application/x-www-form-urlencoded',
    },
    body: formData.toString(),});
@@ -460,7 +459,7 @@
      async VerifyConnection(){
      try {
          const response = await fetch
-         ('http://Zoo-project.local/verifier.php',
+         ('http://Zoo-project.en.gp/php/verifier.php',
          {credentials: 'include'});
      
          const data = await response.json();

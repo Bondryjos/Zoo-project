@@ -35,21 +35,23 @@
   </v-carousel>
     </v-col>
     <v-col cols="12" md="6">
-<h2>Lion</h2>
-<p>la rage du lion</p>
+<h2>{{ animal.prenom }}</h2>
+<p>{{ animal.etat }}</p>
+<p>{{ animal.description }}</p>
     </v-col>
   </v-row>
   <v-row>
     <v-col cols="12" md="8">
 <h2>Mode de vie</h2>
-<p></p>
+<p>{{ animal.mode_de_vie }}</p>
 <h2></h2>
 <p></p>
 
     </v-col>
     <v-col cols="12" md="4">
 <v-card style="background-color:#debc6f;height: 500;">
-<h2>hello world</h2>
+<h2>information</h2>
+<p>{{ animal.information}}</p>
 </v-card>
     </v-col>
   </v-row>
@@ -64,14 +66,14 @@
       :key="item.idanimal">
     <v-slide-group-item
       
-      v-slot="{ isSelected, toggle, selectedClass }"
+      v-slot="{ isSelected,selectedClass }"
       v-if="props.type==item.habitat_idhabitat"
     >
       <v-card
         :class="['ma-4', selectedClass, 'd-flex', 'flex-column']"
         height="100"
         width="100"
-        @click="toggle"
+        @click="(animal=item)"
       >
           <v-img
             :src="item.image"
@@ -113,7 +115,8 @@ console.log(props.type);
           'Fourth',
           'Fifth',
         ],
-        idanimal:[]
+        idanimal:[],
+        animal:{}
       }
     },
     mounted() {
@@ -124,6 +127,13 @@ console.log(props.type);
       axios.get('http://zoo-project.en.gp/php/animaux.php?action=afficher_animaux',{withcredentials: true})
         .then(response => {
           this.idanimal= response.data;
+         var url= new URL(window.location.href)
+          var animalid = url.searchParams.get('animal')
+          this.idanimal.forEach(animal => {
+            if (animalid==animal.idanimal){
+          this.animal=animal;
+            }
+        });
         console.log(response.data);
         })
         .catch(error => {

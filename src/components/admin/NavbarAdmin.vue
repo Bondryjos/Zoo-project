@@ -25,7 +25,7 @@
         <v-list density="compact" nav>
           <router-link :to="{ path: '/admin' }" class="nav-link"> <v-list-item prepend-icon="mdi-home-city" title="Home" value="home" style="color: black;"></v-list-item></router-link>
           <router-link :to="{ path: '/employe' }" class="nav-link"><v-list-item prepend-icon="mdi-account" title="Admin" value="account" style="color: black;"></v-list-item></router-link>
-          <router-link :to="{ path: '/vétérinaire' }" class="nav-link"> <v-list-item prepend-icon="mdi-account-group-outline" title="Employe" value="employe" style="color: black;"></v-list-item></router-link>
+          <router-link :to="{ path: '/veterinaire' }" class="nav-link"> <v-list-item prepend-icon="mdi-account-group-outline" title="Employe" value="employe" style="color: black;"></v-list-item></router-link>
           <v-list-item @click="logout" prepend-icon="mdi mdi-logout" title="Déconnexion" value="déconnexion" style="color: black;"> </v-list-item>
         </v-list>
       </v-navigation-drawer>
@@ -53,7 +53,7 @@ export default {
   },
   methods: {
   logout() {
-    fetch('http://Zoo-project.local/users.php?action=logout', {
+    fetch('http://Zoo-project.en.gp/php/users.php?action=logout', {
       method: 'POST',
       credentials: 'include'
     })

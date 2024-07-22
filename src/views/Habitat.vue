@@ -52,19 +52,13 @@
 
 
         </v-col>
-        <v-col cols="12" md="6">
-         <h2 style="color:orange">Une savane </h2>
-         <p class="mt-6">Le Lorem Ipsum est simplement du faux texte employé dans la composition 
-            et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard 
-            de l'imprimerie depuis les années 1500</p>
-         <h2 class="mt-12" style="color:orange">Une jungle</h2>
-         <p class="mt-6">Le Lorem Ipsum est simplement du faux texte employé dans la composition 
-            et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de 
-            l'imprimerie depuis les années 1500</p>
-         <h2 class="mt-12" style="color:orange">Un marais</h2>
-         <p class="mt-6">Le Lorem Ipsum est simplement du faux texte employé dans la composition 
-            et la mise en page avant impression. Le Lorem Ipsum est le faux texte standard de
-             l'imprimerie depuis les années 1500</p>
+
+        <v-col cols="12" md="6" >
+          <template v-for="item in habitat" :key="habitat">
+         <h2 style="color:orange"> {{ item.nom }}</h2>
+         <p class="mt-6 mb-3">{{ item.description }}</p>
+            <p class=mb-12>{{ item.commentaire }}</p>
+          </template>
         </v-col>
 
     </v-row>
@@ -76,8 +70,8 @@
   <v-card style="height: 100%; background-color: #8aa35a;" data-aos="fade-up"
   data-aos-duration="3000" >
     <v-card-title class="mt-12 pl-12">Animaux savane</v-card-title>
-    <v-card-text class="d-flex justify-center align-center" style="flex-grow: 1;font-size: 36px">
-      16
+    <v-card-text v-model="nombreAnimauxSavane" class="d-flex justify-center align-center" style="flex-grow: 1;font-size: 36px">
+      {{ nombreAnimauxSavane}}
     </v-card-text>
   </v-card>
 </div>
@@ -89,8 +83,8 @@
   <v-card style="height: 100%; background-color: #8aa35a;" data-aos="fade-up"
   data-aos-duration="3000">
     <v-card-title class="mt-12 pl-12">Animaux jungle</v-card-title>
-    <v-card-text class="d-flex justify-center align-center" style="flex-grow: 1;font-size: 36px">
-      25
+    <v-card-text v-model="nombreAnimauxJungle" class="d-flex justify-center align-center" style="flex-grow: 1;font-size: 36px">
+      {{ nombreAnimauxJungle }}
     </v-card-text>
   </v-card>
 </div>
@@ -102,8 +96,8 @@
   <v-card style="height: 100%; background-color: #8aa35a;" data-aos="fade-up"
   data-aos-duration="3000">
     <v-card-title class="mt-12 pl-12">Animaux marais</v-card-title>
-    <v-card-text class="d-flex justify-center align-center" style="flex-grow: 1;font-size: 36px">
-     10
+    <v-card-text v-model="nombreAnimauxMarais" class="d-flex justify-center align-center" style="flex-grow: 1;font-size: 36px">
+      {{ nombreAnimauxMarais }}
     </v-card-text>
   </v-card>
 </div>
@@ -212,13 +206,12 @@
         width="100"
         @click="toggle"
       >
-        <router-link :to="{ path: '/'+(habitats[item.habitat_idhabitat] ? habitats[item.habitat_idhabitat].nom : '')}" class="nav-link">
+      <router-link :to="{ path: '/'+(habitats[item.habitat_idhabitat] ? habitats[item.habitat_idhabitat].nom: ''), query:{ animal:item.idanimal  }}" class="nav-link">
           <v-img
             :src="item.image"
             class="fill-height"
             style="object-fit: cover; height: 100%; width: 100%;"
           ></v-img>
-          <h2>{{ item.prenom }}</h2>
         </router-link>
 
         <div class="d-flex fill-height align-center justify-center">
@@ -262,6 +255,9 @@ import axios from "axios";
   export default {
     data () {
       return {
+        nombreAnimauxJungle:0,
+        nombreAnimauxMarais:0,
+        nombreAnimauxSavane:0,
        colors: [
           'green',
           'secondary',
@@ -298,6 +294,7 @@ import axios from "axios";
     this.fetchidanimal();
     this.fetchhabitat();
     this.fetchrace();
+    this.fetchnumber();
   },
   computed: {
       likesAllHabitat () {
@@ -354,7 +351,7 @@ import axios from "axios";
         .catch(error => {
           console.error('Error:', error);
         });
-        axios.get('http://zoo-project.local/habitat.php?action=afficher_habitat',{withcredentials: true})
+        axios.get('http://Zoo-project.en.gp/php/habitat.php?action=afficher_habitat',{withcredentials: true})
         .then(response => {
           this.habitats = response.data;
         console.log(response.data);
@@ -364,7 +361,7 @@ import axios from "axios";
         });
     },
     fetchhabitat() {
-      axios.get('http://zoo-project.local/habitat.php?action=get_habitat',{withcredentials: true})
+      axios.get('http://Zoo-project.en.gp/php/habitat.php?action=get_habitat',{withcredentials: true})
         .then(response => {
           if (response.data && response.data.habitat) {
             this.habitat = response.data.habitat;
@@ -392,9 +389,20 @@ import axios from "axios";
       this.selectedHabitat.forEach(habitat => {params+='habitat[]='+habitat+'&'});
       this.selectedRace.forEach(race => {params+='race[]='+race+'&'});
       console.log(params);
-      axios.get('http://zoo-project.local/filtre.php?'+params,{withcredentials: true})
+      axios.get('http://Zoo-project.en.gp/php/filtre.php?'+params,{withcredentials: true})
         .then(response => {
         this.idanimal=response.data;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+    fetchnumber() {
+      axios.get('http://zoo-project.en.gp/php/animaux.php?action=number_animal',{withcredentials: true})
+        .then(response => {
+         this.nombreAnimauxJungle=response.data.nombre.jungle.nombre;
+         this.nombreAnimauxSavane=response.data.nombre.savane.nombre;
+         this.nombreAnimauxMarais=response.data.nombre.marais.nombre;
         })
         .catch(error => {
           console.error('Error:', error);

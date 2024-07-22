@@ -28,9 +28,10 @@
             <div class="text-h2">
                {{ item.titre }}
             </div>
-            <div class="text-h2">
+            <p>
                {{ item.description }}
-            </div>
+              </p>
+          
         </v-img>
             </div>
           </div>
@@ -71,7 +72,7 @@ console.log(props.type);
   },
     methods: {
     fetchidservice() {
-      axios.get('http://zoo-project.local/service.php?action=afficher_service',{withcredentials: true})
+      axios.get('http://Zoo-project.en.gp/php/Service.php?action=afficher_service',{withcredentials: true})
         .then(response => {
           this.idservice = response.data;
         console.log(response.data);

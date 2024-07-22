@@ -34,7 +34,7 @@ export default {
 
       console.log(new URLSearchParams(formData).toString()) 
 
-fetch('http://Zoo-project.local/users.php?action=login', {
+fetch('http://Zoo-project.en.gp/php/users.php?action=login', {
   method: 'POST',
   credentials: 'include',
   headers: {

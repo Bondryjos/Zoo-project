@@ -109,7 +109,11 @@
                                     
                                     <td> 
           <v-btn @click=" handleEditedAnimal(item)">voir</v-btn>
-          <v-btn @click="deleteanimal(item)">supprimer</v-btn></td>
+          <v-btn @click="deleteanimal(item)">supprimer</v-btn>
+          <v-btn @click=" handleEditedAnimalPhoto(item)">ajouter</v-btn>
+          <v-btn @click=" handleEditedAnimalPhoto(item)">voir image</v-btn>
+        </td>
+
                                 </tr>
                             </tbody>
                             <v-dialog v-model="editAnimalDialog" max-width="500">
@@ -133,6 +137,29 @@
           <v-btn @click="cancelEditAnimal">Annuler</v-btn>
         </v-card-actions>
         <input type="hidden" name="idanimal" :value="editedAnimal.idanimal"/>
+        </v-form>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="editAnimalPhotoDialog" max-width="500">
+      <v-card>
+        <v-card-title>
+          Modifier l'élément
+        </v-card-title>
+        <v-form  @submit.prevent=" addAnimalPhoto" id="Animal_Photo" >
+        <v-card-text>
+        
+          <v-file-input
+        
+        label="Télécharger une photo"
+        accept="image/*"
+        name="image"
+      ></v-file-input>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn @click="addAnimalPhoto">ajouter</v-btn>
+          <v-btn @click="cancelEditAnimalPhoto">Annuler</v-btn>
+        </v-card-actions>
+        <input type="hidden" name="idanimal" :value="editedAnimalPhoto.idanimal"/>
         </v-form>
       </v-card>
     </v-dialog>
@@ -305,6 +332,8 @@
           <v-btn @click="cancelEditPersonel">Annuler</v-btn>
         </v-card-actions>
         </v-form>
+        <v-alert v-if="message" type="success">{{ message }}</v-alert>
+    <v-alert v-if="error" type="error">{{ error }}</v-alert>
       </v-card>
     </v-dialog>
                     </v-col>
@@ -346,11 +375,13 @@
           editHabitatDialog: false,
           editContactDialog: false,
           editAnimalDialog:false,
+          editAnimalPhotoDialog:false,
           editAddDialog:false,
           editedItem: {},
           editedHabitat:{},
           editedContact:{},
           editedAnimal:{},
+          editedAnimalPhoto:{},
           editedService:{},
           editedPersonel:{},
         };
@@ -419,7 +450,7 @@
       },
         async VerifyService(){
         try {
-            const response = await fetch('http://Zoo-project.local/service.php?action=administration_service',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=administration_service',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
@@ -447,7 +478,7 @@
       },
       async VerifyHabitat(){
         try {
-            const response = await fetch('http://Zoo-project.local/habitat.php?action=administration_habitat',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.en.gp/php/habitat.php?action=administration_habitat',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
@@ -460,7 +491,7 @@
           }
       }, async VerifyPersonel(){
         try {
-            const response = await fetch('http://Zoo-project.local/users.php?action=lire_utilisateur',{credentials: 'include'});
+            const response = await fetch('http://Zoo-project.en.gp/php/users.php?action=lire_utilisateur',{credentials: 'include'});
         
             const data = await response.json();
             if (data.status==true){
@@ -510,7 +541,7 @@
     async  modifyservice() {
   try {
     const formData = new FormData(document.querySelector('#Horaires'));
-    const response = await fetch('http://Zoo-project.local/Service.php?action=modifier_service', {
+    const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=modifier_service', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -554,7 +585,7 @@ async  modifyanimal() {
 async  modifyhabitat() {
   try {
     const formData = new FormData(document.querySelector('#Horaires'));
-    const response = await fetch('http://Zoo-project.local/habitat.php?action=modifier_habitat', {
+    const response = await fetch('http://Zoo-project.en.gp/php/habitat.php?action=modifier_habitat', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -576,7 +607,7 @@ async  modifyhabitat() {
 async  submitFormService() {
   try {
     const formData = new FormData(document.querySelector('#Nourriture'));
-    const response = await fetch('http://Zoo-project.local/Service.php?action=ajouter_service', {
+    const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=ajouter_service', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -617,6 +648,28 @@ async  submitFormAnimal() {
     console.error('Erreur lors de la soumission du formulaire:', error);
   }
 }, 
+async addAnimalPhoto () {
+  try {
+    const formData = new FormData(document.querySelector('#Animal_Photo'));
+    const response = await fetch('http://Zoo-project.en.gp/php/animaux.php?action=ajouter_photo', {
+      method: 'POST',
+      credentials: 'include',
+      body: formData
+    });
+
+    const responseData = await response.json();
+
+    console.log(responseData);
+
+    if (responseData.status) {
+      this.editAnimalPhotoDialog=false;
+    } else {
+      console.log('Échec de l\'envoie');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la soumission du formulaire:', error);
+  }
+}, 
 async  submitFormHabitat() {
   try {
     const formData = new FormData(document.querySelector('#Nourriture'));
@@ -642,7 +695,7 @@ async  submitFormHabitat() {
 async  submitFormPersonel() {
   try {
     const formData = new FormData(document.querySelector('#Personel'));
-    const response = await fetch('http://Zoo-project.local/users.php?action=ajouter_utilisateur', {
+    const response = await fetch('http://Zoo-project.en.gp/php/users.php?action=ajouter_utilisateur', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -703,6 +756,14 @@ async  submitFormPersonel() {
         cancelEditAnimal() {
           this.editAnimalDialog = false;
         },
+        handleEditedAnimalPhoto(item) {
+          this.editAnimalPhotoDialog = true;
+          this.editedAnimalPhoto = { ...item };
+          console.log(this.editAnimalPhoto)
+        },
+        cancelEditAnimalPhoto() {
+          this.editAnimalPhotoDialog = false;
+        },
         handleEditedPersonel(item) {
           this.editPersonelDialog = true;
           this.editedPersonel = { ...item };
@@ -717,7 +778,7 @@ async  submitFormPersonel() {
     for (const key in item) {
       formData.append(key, item[key]);
     }
-            const response = await fetch('http://Zoo-project.local/avis.php?action=verifier',{credentials: 'include' ,method:"post",headers: {
+            const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=verifier',{credentials: 'include' ,method:"post",headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),});
@@ -738,7 +799,7 @@ async  submitFormPersonel() {
     for (const key in item) {
       formData.append(key, item[key]);
     }
-            const response = await fetch('http://Zoo-project.local/avis.php?action=delete_avis',{credentials: 'include' ,method:"post",headers: {
+            const response = await fetch('http://Zoo-project.en.gp/php/avis.php?action=delete_avis',{credentials: 'include' ,method:"post",headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: formData.toString(),});
@@ -759,7 +820,7 @@ async  submitFormPersonel() {
 for (const key in item) {
   formData.append(key, item[key]);
 }
-        const response = await fetch('http://Zoo-project.local/users.php?action=supprimer_utilisateur',{credentials: 'include' ,method:"post",headers: {
+        const response = await fetch('http://Zoo-project.en.gp/php/users.php?action=supprimer_utilisateur',{credentials: 'include' ,method:"post",headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
   },
   body: formData.toString(),});
@@ -781,7 +842,7 @@ for (const key in item) {
 for (const key in item) {
   formData.append(key, item[key]);
 }
-        const response = await fetch('http://Zoo-project.local/Service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
+        const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=supprimer_service',{credentials: 'include' ,method:"post",headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
   },
   body: formData.toString(),});
@@ -820,7 +881,7 @@ for (const key in item) {
     async VerifyConnection(){
     try {
         const response = await fetch
-        ('http://Zoo-project.local/verifier.php',
+        ('http://Zoo-project.en.gp/php/verifier.php',
         {credentials: 'include'});
     
         const data = await response.json();
