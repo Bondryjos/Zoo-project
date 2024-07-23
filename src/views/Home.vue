@@ -67,14 +67,14 @@ directeur, José, qui a de grandes ambitions.</p>
         <v-row justify="center">
           <v-col cols="12" sm="10">
             <v-row justify="center">
-              <v-col cols="12" sm="3" v-for="(hotel, i) in hotels" :key="i">
+              <v-col cols="12" sm="3" v-for="(habitat, i) in habitats" :key="i">
               <v-hover v-slot="{isHovering,props}">
-                <router-link :to="{ path: '/visitehabitat' }" class="nav-link">
+                <router-link :to="{ path: '/'+habitat.route }" class="nav-link">
                 <v-card class="mx-auto" color="grey-lighten-4" max-width="600" v-bind="props" :data-aos="animations[i]" data-aos-duration="3000">
-                <v-img :aspect-ratio="16 /9" cover :src="hotel.image">
+                <v-img :aspect-ratio="16 /9" cover :src="habitat.image">
                   <v-expand-transition>
                     <div v-if="isHovering" class="d-flex transition-fast-in-fast-out bg-yellow darken-4 v-card--reveal" style="height: 100%;">
-                      <h1>savane</h1>
+                      <h>{{ habitat.title }}</h>
                     </div>
                   </v-expand-transition>
                 </v-img>
@@ -169,23 +169,23 @@ directeur, José, qui a de grandes ambitions.</p>
   </div>
                     </v-row>
                     <v-row>
-                    <v-col cols="12" md="6">
+                    <v-col cols="12" md="6" id="contact">
                     <v-sheet class="mx-auto" width="300">
-    <v-form @submit.prevent style="background-color:#72913a;">
+    <v-form @submit.prevent="submitFormFormulaire" id="Formulaire" style="background-color:#72913a;">
       <v-text-field
         v-model="firstName"
         :rules="rules"
         label="titre"
       ></v-text-field>
       <v-textarea
-                            v-model="description"
+                            v-model="message"
                             :rules="rules"
-                            label="Description"
+                            label="message"
                             rows="5"
                             outlined
                         ></v-textarea>
       <v-text-field
-        v-model="firstName"
+        v-model="email"
         :rules="rules"
         label="email"
       ></v-text-field>
@@ -222,13 +222,18 @@ export default {
       name: '',
         description: '',
         retouravis: '',
+        titre: '',
+      message: '',
+      email: '',
         retouravistype: null,
+        retourformulaires:'',
+      retourformulairestype:false,
         rules: [
             v => !!v || 'Message is required',
             v => (v && v.length <= 500) || 'Message must be less than 500 characters'
         ],
       detailsModal: false,
-      selectedItem: null,  // Assurez-vous que c'est initialement null
+      selectedItem: null,  
       sampleData: [
         {
           image: 'path/to/image1.jpg',
@@ -248,29 +253,23 @@ export default {
           kilometrage: '20000',
           vehicules_id: '2'
         }
-        // Ajouter plus de données d'exemple si nécessaire
       ],
-      hotels: [
+      habitats: [
       {
         image: "src/assets/Default_savannah_animal_habitat_0.jpg",
-        title: " Enjoy The Beauty Place in Greece City",
-        subtitle1: "Greece",
-        subtitle2: "4 Day's 3 Night",
-        money: "$1200",
+        title: " Savane",
+        route: "savane",
+        
       },
       {
         image: "src/assets/Default_marsh_habitat_for_animals_0.jpg",
-        title: " Enjoy The Beauty Place in Maldivs Beach",
-        subtitle1: "Maldivs",
-        subtitle2: "5 Day's 4 Night",
-        money: "$1300",
+        title: " Marais",
+        route: "marais",
       },
       {
         image: "src/assets/Default_jungle_habitat_for_animals_0.jpg",
-        title: " Enjoy The Beauty Place in Bhutan City",
-        subtitle1: "Bhutan",
-        subtitle2: "3 Day's 2 Night",
-        money: "$900",
+        title: " Jungle",
+        route: "jungle",
       },
     ],
     animations: ['fade-right', 'fade-up', 'fade-left', 'fade-down'],
@@ -315,7 +314,32 @@ methods: {
           console.error('Erreur lors de la soumission du formulaire:', error);
         });
     },
+    submitFormFormulaire() {
+      
+
+      axios.post('http://Zoo-project.en.gp/php/formulaire.php', formData, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then(response => {
+        this.retourformulaires=response.data.message;
+        this.retourformulairestype=response.data.status==='success'?true:false;
+        console.log(response);
+        if (response.data.status) {
+         
+        } else {
+          console.log('Échec de l\'envoi');
+        }
+      })
+      .catch(error => {
+        console.error('Erreur lors de la soumission du formulaire:', error);
+      });
+    },
   }
+  
+  
 };
 </script>
 <style scoped>

@@ -28,17 +28,14 @@ function getAllAnimalData(PDO $pdo)
 }
 $action = isset($_GET["action"]) ? $_GET["action"] : null;
 if ($_GET["action"] == "afficher_animaux") {
-if(isset($_GET["filter"])) {
-    $data = getAllFilterData($pdo);
-} else {
   $data = getAllAnimalData($pdo);
+  header('Content-Type: application/json');
+echo json_encode($data);
 }
 
-header('Content-Type: application/json');
-echo json_encode($data);
 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+if ($_GET["action"] == "ajouter_animaux") {
     $prenom= $_POST['prenom'];
     $etat=$_POST['etat'];
     $description=$_POST['description'];
@@ -47,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $habitat_idhabitat=$_POST['habitat_idhabitat'];
      
     if ($_FILES["image"]["error"] > 0) {
-        echo "Erreur lors du téléchargement: " . $_FILES["image"]["error"];
+       // echo "Erreur lors du téléchargement: " . $_FILES["image"]["error"];
     } else {
         $uploadDirectory = "../src/assets/";
 
@@ -68,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     
-} 
+
 } elseif ($action === "modifier_animaux") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["idanimal"])) {
@@ -86,19 +83,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ;
             }
            
-            $stmt = $pdo->prepare("UPDATE animal SET `prenom` = ?,`image`
-             = COALESCE(?, image), `annee_mise_en_circulation` = ?, 
-             `kilometrage` = ?, `titre` = ?, `description` = ? WHERE
-              vehicules_id = ?");
+            $stmt = $pdo->prepare("UPDATE animal SET `prenom` = ?,`image`=?,`etat`=?,
+              `description` = ?, 
+             `mode_de_vie` = ?, `information` = ?, `habitat_idhabitat` = ? WHERE
+              idanimal = ?");
             
             $stmt->execute([
                 $_POST["prenom"],
                 $image,
-                $_POST["annee_mise_en_circulation"],
-                $_POST["kilometrage"],
-                $_POST["titre"],
+                $_POST["etat"],
                 $_POST["description"],
-                $_POST["vehicules_id"]
+                $_POST["mode_de_vie"],
+                $_POST["information"],
+                $_POST["habitat_idhabitat"],
+                $_POST["idanimal"]
             ]);
     
             if ($stmt->rowCount()) {
@@ -213,5 +211,19 @@ if ($action === "ajouter_photo") {
             echo json_encode(array("status" => "error", "message" => "Erreur lors du déplacement du fichier téléchargé."));
         }
     }
+}elseif ($action === "recuperer_photo") {
+
+    try {
+        $query = $pdo->prepare("SELECT image.* FROM image,image_has_animal Where image.idimage=image_has_animal.image_idimage and image_has_animal.animal_idanimal=? ");
+        $query->execute([$_GET['animalid']]);
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        header('Content-Type: application/json');
+        echo json_encode($result);
+        
+    } catch (PDOException $e) {
+        die('Erreur : ' . $e->getMessage());
+    }
+
 }
 

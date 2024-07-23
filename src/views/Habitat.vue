@@ -2,17 +2,17 @@
     <NavBar/> 
     <v-carousel>
   <v-carousel-item
-    src="https://cdn.vuetifyjs.com/images/cards/docks.jpg"
+    src="src/assets/Default_jungle_habitat_for_animals_0.jpg"
     cover
   ></v-carousel-item>
 
   <v-carousel-item
-    src="https://cdn.vuetifyjs.com/images/cards/hotel.jpg"
+    src="src/assets/Default_marsh_habitat_for_animals_0.jpg"
     cover
   ></v-carousel-item>
 
   <v-carousel-item
-    src="https://cdn.vuetifyjs.com/images/cards/sunshine.jpg"
+    src="src/assets/Default_savannah_animal_habitat_0.jpg"
     cover
   ></v-carousel-item>
 </v-carousel>
@@ -41,9 +41,7 @@
           tile
         >
           <div class="d-flex fill-height justify-center align-center">
-            <div class="text-h2">
-              {{ slide }} Slide
-            </div>
+            <img :src="slide" alt="Carousel Image" class="carousel-image" />
           </div>
         </v-sheet>
       </v-carousel-item>
@@ -275,11 +273,10 @@ import axios from "axios";
         { title: 'Click Me 2' },
       ],
         slides: [
-          'First',
-          'Second',
-          'Third',
-          'Fourth',
-          'Fifth',
+          'src/assets/Default_jungle_habitat_for_animals_0.jpg',
+          'src/assets/Default_marsh_habitat_for_animals_0.jpg',
+          'src/assets/Default_savannah_animal_habitat_0.jpg',
+          
         ],
         selectedHabitat: [],
         selectedRace: [],

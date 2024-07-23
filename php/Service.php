@@ -26,48 +26,20 @@ function getAllServiceData(PDO $pdo)
         die('Erreur : ' . $e->getMessage());
     }
 }
-function getAllFilterData(PDO $pdo)
-{
-    try {
-        $query = $pdo->prepare("SELECT * FROM `animal`
-         WHERE `prix` < :prix AND `kilometrage` < :kilometrage 
-         AND `annee_mise_en_circulation` < :annee_mise_en_circulation");
-        $query->execute([":prix" => $_GET["prix"], ":kilometrage" => 
-        $_GET["kilometrage"], ":annee_mise_en_circulation" => 
-        $_GET["annee"]]);
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
-
-    
-        foreach ($result as &$row) {
-            if (empty($row['image'])) {
-                $row['image'] = '..\src\assets\Leonardo_Diffusion_XL_car_logo_in_orange_for_website_3.jpg';
-            }
-        }
-
-        return $result;
-    } catch (PDOException $e) {
-        die('Erreur : ' . $e->getMessage());
-    }
-}
 $action=$_GET["action"];
 if ($_GET["action"] == "afficher_service") {
-if(isset($_GET["filter"])) {
-    $data = getAllFilterData($pdo);
-} else {
   $data = getAllServiceData($pdo);
+  header('Content-Type: application/json');
+echo json_encode($data);
 }
 
-header('Content-Type: application/json');
-echo json_encode($data);
 
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $prenom= $_POST['prenom'];
-    $etat=$_POST['etat'];
+
+if ($_GET["action"] == "ajouter_service") {
+    $titre=$_POST['titre'];
     $description=$_POST['description'];
-    $mode_de_vie = $_POST['mode_de_vie'];
-    $information=$_POST['information'];
-    $habitat_idhabitat=$_POST['habitat_idhabitat'];
+    $type=$_POST['type'];
      
     if ($_FILES["image"]["error"] > 0) {
         echo "Erreur lors du téléchargement: " . $_FILES["image"]["error"];
@@ -81,8 +53,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         move_uploaded_file($_FILES["image"]["tmp_name"], $destination)
         ;
     }
-    $stmt = $pdo->prepare("INSERT INTO animal (prenom, etat, description, mode_de_vie, information, habitat_idhabitat ) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->execute([$prenom, $etat, $description, $mode_de_vie,$information,$habitat_idhabitat ]);
+    $stmt = $pdo->prepare("INSERT INTO image (image_slide) VALUES (?)");
+    $stmt->execute([$image]);
+    $idimage = $pdo->lastInsertId();
+    $stmt = $pdo->prepare("INSERT INTO service (idservice, titre, description, idimage, type ) VALUES (null, ?, ?, ?, ?)");
+    $stmt->execute([ $titre, $description, $idimage,$type ]);
     
     if ($stmt->rowCount()) {
         echo json_encode(array("status" => "success", "message" => "Données du formulaire insérées avec succès"));
@@ -91,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     
-} 
+
 } elseif ($action === "modifier_service") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["idservice"])) {
@@ -108,20 +83,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                  $destination)
                 ;
             }
+            $stmt = $pdo->prepare("INSERT INTO image (image_slide) VALUES (?)");
+            $stmt->execute([$image]);
+            $idimage = $pdo->lastInsertId();
            
-            $stmt = $pdo->prepare("UPDATE service SET `prenom` = ?,`image`
-             = COALESCE(?, image), `annee_mise_en_circulation` = ?, 
-             `kilometrage` = ?, `titre` = ?, `description` = ? WHERE
-              vehicules_id = ?");
+            $stmt = $pdo->prepare("UPDATE service SET `idimage`=?,
+            `titre`=?,`description`=?,`type`=?
+            
+              WHERE
+              idservice = ?");
             
             $stmt->execute([
-                $_POST["prenom"],
-                $image,
-                $_POST["annee_mise_en_circulation"],
-                $_POST["kilometrage"],
+                
+                $idimage,
                 $_POST["titre"],
                 $_POST["description"],
-                $_POST["vehicules_id"]
+                $_POST["type"],
+                $_POST["idservice"]
             ]);
     
             if ($stmt->rowCount()) {

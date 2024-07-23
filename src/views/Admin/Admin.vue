@@ -33,11 +33,10 @@
                                     <td>{{ item.type }}</td>
                                     
                                     <td> <v-btn @click="handleEditedService(item)">Voir</v-btn>
-          <v-btn @click="postservice(item)">poster</v-btn>
           <v-btn @click="deleteservice(item)">supprimer</v-btn></td>
                                 </tr>
                             </tbody>
-                            <v-dialog v-model="editServiceDialog" max-width="500">
+                            <v-dialog v-model="editModifyServiceDialog" max-width="500">
       <v-card>
         <v-card-title>
           Modifier l'élément
@@ -46,7 +45,12 @@
         <v-card-text>
           <v-text-field v-model="editedService.titre" name="titre" label="titre"></v-text-field>
           <v-text-field v-model="editedService.description" name="description" label="description"></v-text-field>
-          <v-text-field v-model="editedService.idimage" name="idimage" label="image"></v-text-field>
+          <v-file-input
+        
+        label="Télécharger une photo"
+        accept="image/*"
+        name="image"
+      ></v-file-input>
           <v-text-field v-model="editedService.type" name="type" label="type"></v-text-field>
         </v-card-text>
         <v-card-actions>
@@ -66,12 +70,17 @@
         <v-card-title>
           Ajouter des services
         </v-card-title>
-        <v-form   @submit.prevent="submitFormService" id="Service" class="mt-6">
+        <v-form   @submit.prevent="submitFormService" id="ajouter_service" class="mt-6">
         <v-card-text>
           <!-- Formulaire de modification -->
           <v-text-field  label="titre" name="titre"></v-text-field>
           <v-text-field  label="description" name="description"></v-text-field>
-          <v-text-field  label="idimage" name="idimage"></v-text-field>
+          <v-file-input
+        
+        label="Télécharger une photo"
+        accept="image/*"
+        name="image"
+      ></v-file-input>
           <v-text-field  label="type" name="type"></v-text-field>
         </v-card-text>
         <v-card-actions>
@@ -108,7 +117,7 @@
                                     <td>{{ item.race }}</td>
                                     
                                     <td> 
-          <v-btn @click=" handleEditedAnimal(item)">voir</v-btn>
+          <v-btn @click=" handleEditedModifyAnimal(item)">voir</v-btn>
           <v-btn @click="deleteanimal(item)">supprimer</v-btn>
           <v-btn @click=" handleEditedAnimalPhoto(item)">ajouter</v-btn>
           <v-btn @click=" handleEditedAnimalPhoto(item)">voir image</v-btn>
@@ -116,7 +125,7 @@
 
                                 </tr>
                             </tbody>
-                            <v-dialog v-model="editAnimalDialog" max-width="500">
+                            <v-dialog v-model="editModifyAnimalDialog" max-width="500">
       <v-card>
         <v-card-title>
           Modifier l'élément
@@ -129,12 +138,18 @@
           <v-text-field v-model="editedAnimal.mode_de_vie" name="mode_de_vie" label="mode_de_vie"></v-text-field>
           <v-text-field v-model="editedAnimal.information" name="information" label="information"></v-text-field>
           <v-text-field v-model="editedAnimal.habitat_idhabitat" name="habitat_idhabitat" label="habitat"></v-text-field>
-          <v-text-field v-model="editedAnimal.race" name="race" label="image"></v-text-field>
-          <v-text-field v-model="editedAnimal.image" name="image" label="image"></v-text-field>
+          <v-text-field v-model="editedAnimal.race" name="race" label="race"></v-text-field>
+          <v-text-field v-model="editedAnimal.nombre_visite" name="nombre_visite" label="nombre_de_visite"></v-text-field>
+          <v-file-input
+        
+        label="Télécharger une photo"
+        accept="image/*"
+        name="image"
+      ></v-file-input>
         </v-card-text>
         <v-card-actions>
           <v-btn @click="modifyanimal">modifier</v-btn>
-          <v-btn @click="cancelEditAnimal">Annuler</v-btn>
+          <v-btn @click="cancelEditModifyAnimal">Annuler</v-btn>
         </v-card-actions>
         <input type="hidden" name="idanimal" :value="editedAnimal.idanimal"/>
         </v-form>
@@ -170,9 +185,9 @@
       <v-card>
 
         <v-card-title>
-          Ajouter des services
+          Ajouter des animaux
         </v-card-title>
-        <v-form   @submit.prevent="submitFormAnimal" id="Animal" class="mt-6">
+        <v-form   @submit.prevent="submitFormAnimal" id="ajouter_Animal" class="mt-6">
         <v-card-text>
           <!-- Formulaire de modification -->
           <v-text-field v-model="editedAnimal.prenom" name="prenom" label="titre"></v-text-field>
@@ -182,7 +197,12 @@
           <v-text-field v-model="editedAnimal.information" name="information" label="information"></v-text-field>
           <v-text-field v-model="editedAnimal.habitat_idhabitat" name="habitat_idhabitat" label="habitat"></v-text-field>
           <v-text-field v-model="editedAnimal.race" name="race" label="image"></v-text-field>
-          <v-text-field v-model="editedAnimal.image" name="image" label="image"></v-text-field>
+          <v-file-input
+        
+        label="Télécharger une photo"
+        accept="image/*"
+        name="image"
+      ></v-file-input>
         </v-card-text>
         <v-card-actions>
           <v-btn @click="submitFormAnimal">ajouter</v-btn>
@@ -239,27 +259,6 @@
                             </v-table>
                             <v-pagination v-model="habitatPageNumber" :length="7" @input="nextPage"></v-pagination>
                         </v-card>
-                        <v-btn @click="handleEditedHabitat">ajouter</v-btn>
-                        <v-dialog v-model="editHabitatDialog" max-width="500">
-      <v-card>
-
-        <v-card-title>
-          Ajouter des services
-        </v-card-title>
-        <v-form   @submit.prevent="submitFormHabitat" id="Habitat" class="mt-6">
-        <v-card-text>
-          <!-- Formulaire de modification -->
-          <v-text-field v-model="editedHabitat.nom" name="nom" label="nom"></v-text-field>
-          <v-text-field v-model="editedHabitat.description" name="description" label="description"></v-text-field>
-          <v-text-field v-model="editedHabitat.commentaire" name="commentaire" label="commentaire"></v-text-field>
-        </v-card-text>
-        <v-card-actions>
-          <v-btn @click="submitFormHabitat">ajouter</v-btn>
-          <v-btn @click="cancelEditHabitat">Annuler</v-btn>
-        </v-card-actions>
-        </v-form>
-      </v-card>
-    </v-dialog>
                     </v-col>
                 </v-row>
                 <v-row>
@@ -325,7 +324,11 @@
           <v-text-field  name="nom" label="nom"></v-text-field>
           <v-text-field  name="email" label="email"></v-text-field>
           <v-text-field  name="mot_de_passe" label="mode de passe"></v-text-field>
-          <v-text-field  name="role" label="role"></v-text-field>
+          <v-select 
+      :items="['employe', 'veterinaire']" 
+      label="role" 
+      name="role"
+    ></v-select>
         </v-card-text>
         <v-card-actions>
           <v-btn @click="submitFormPersonel">ajouter</v-btn>
@@ -371,10 +374,12 @@
           personelPageNumber: 1,
           size: 10,
           editServiceDialog: false,
+          editModifyServiceDialog: false,
           editPersonelDialog: false,
           editHabitatDialog: false,
           editContactDialog: false,
           editAnimalDialog:false,
+          editModifyAnimalDialog:false,
           editAnimalPhotoDialog:false,
           editAddDialog:false,
           editedItem: {},
@@ -540,7 +545,7 @@
     },
     async  modifyservice() {
   try {
-    const formData = new FormData(document.querySelector('#Horaires'));
+    const formData = new FormData(document.querySelector('#Service'));
     const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=modifier_service', {
       method: 'POST',
       credentials: 'include',
@@ -562,8 +567,8 @@
 }, 
 async  modifyanimal() {
   try {
-    const formData = new FormData(document.querySelector('#Horaires'));
-    const response = await fetch('http://zoo-project.en.gp/php/animal.php?action=modifier_animal', {
+    const formData = new FormData(document.querySelector('#Animal'));
+    const response = await fetch('http://zoo-project.en.gp/php/animaux.php?action=modifier_animaux', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -574,7 +579,7 @@ async  modifyanimal() {
     console.log(responseData);
 
     if (responseData.status) {
-      this.editAnimalDialog=false;
+      this.editModifyAnimalDialog=false;
     } else {
       console.log('Échec de l\'envoie');
     }
@@ -584,7 +589,7 @@ async  modifyanimal() {
 }, 
 async  modifyhabitat() {
   try {
-    const formData = new FormData(document.querySelector('#Horaires'));
+    const formData = new FormData(document.querySelector('#Habitat'));
     const response = await fetch('http://Zoo-project.en.gp/php/habitat.php?action=modifier_habitat', {
       method: 'POST',
       credentials: 'include',
@@ -606,7 +611,7 @@ async  modifyhabitat() {
 }, 
 async  submitFormService() {
   try {
-    const formData = new FormData(document.querySelector('#Nourriture'));
+    const formData = new FormData(document.querySelector('#ajouter_service'));
     const response = await fetch('http://Zoo-project.en.gp/php/Service.php?action=ajouter_service', {
       method: 'POST',
       credentials: 'include',
@@ -628,8 +633,8 @@ async  submitFormService() {
 }, 
 async  submitFormAnimal() {
   try {
-    const formData = new FormData(document.querySelector('#Nourriture'));
-    const response = await fetch('http://Zoo-project.en.gp/php/imal.php?action=ajouter_animal', {
+    const formData = new FormData(document.querySelector('#ajouter_Animal'));
+    const response = await fetch('http://Zoo-project.en.gp/php/animaux.php?action=ajouter_animaux', {
       method: 'POST',
       credentials: 'include',
       body: formData
@@ -735,11 +740,18 @@ async  submitFormPersonel() {
         },
         handleEditedService(item) {
           this.editServiceDialog = true;
-          this.editedService = { ...item };
           console.log(this.editService)
         },
         cancelEditService() {
           this.editServiceDialog = false;
+        },
+        handleEditedModifyService(item) {
+          this.editModifyServiceDialog = true;
+          this.editedService = { ...item };
+          console.log(this.editService)
+        },
+        cancelEditModifyService() {
+          this.editModifyServiceDialog = false;
         },
         handleEditedAdd(item) {
           this.editAddDialog = true;
@@ -750,11 +762,18 @@ async  submitFormPersonel() {
         },
         handleEditedAnimal(item) {
           this.editAnimalDialog = true;
-          this.editedAnimal = { ...item };
           console.log(this.editAnimal)
         },
         cancelEditAnimal() {
           this.editAnimalDialog = false;
+        },
+        handleEditedModifyAnimal(item) {
+          this.editModifyAnimalDialog = true;
+          this.editedAnimal = { ...item };
+          console.log(this.editAnimal)
+        },
+        cancelEditModifyAnimal() {
+          this.editModifyAnimalDialog = false;
         },
         handleEditedAnimalPhoto(item) {
           this.editAnimalPhotoDialog = true;
@@ -857,13 +876,13 @@ for (const key in item) {
         console.error('Une erreur est survenu:', error);
       }
     },
-    async deletenanimal(item){
+    async deleteanimal(item){
       try {
         const formData = new URLSearchParams();
 for (const key in item) {
   formData.append(key, item[key]);
 }
-        const response = await fetch('http://Zoo-project.en.gp/php/animal.php?action=supprimer_animal',{credentials: 'include' ,method:"post",headers: {
+        const response = await fetch('http://Zoo-project.en.gp/php/animaux.php?action=supprimer_animaux',{credentials: 'include' ,method:"post",headers: {
     'Content-Type': 'application/x-www-form-urlencoded',
   },
   body: formData.toString(),});

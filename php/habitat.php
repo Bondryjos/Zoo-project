@@ -27,29 +27,6 @@ function getAllHabitatData(PDO $pdo)
         die('Erreur : ' . $e->getMessage());
     }
 }
-function getAllFilterData(PDO $pdo)
-{
-    try {
-        $query = $pdo->prepare("SELECT * FROM `animal`
-         WHERE `prix` < :prix AND `kilometrage` < :kilometrage 
-         AND `annee_mise_en_circulation` < :annee_mise_en_circulation");
-        $query->execute([":prix" => $_GET["prix"], ":kilometrage" => 
-        $_GET["kilometrage"], ":annee_mise_en_circulation" => 
-        $_GET["annee"]]);
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
-
-    
-        foreach ($result as &$row) {
-            if (empty($row['image'])) {
-                $row['image'] = '..\src\assets\Leonardo_Diffusion_XL_car_logo_in_orange_for_website_3.jpg';
-            }
-        }
-
-        return $result;
-    } catch (PDOException $e) {
-        die('Erreur : ' . $e->getMessage());
-    }
-}
 $action=$_GET["action"];
 if ($_GET["action"] == "afficher_habitat") {
 if(isset($_GET["filter"])) {
@@ -96,33 +73,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 } elseif ($action === "modifier_habitat") {
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (isset($_POST["idhabitat"])) {
-            if ($_FILES["image"]["error"] > 0) {
-               $image=null;
-            } else {
-                $uploadDirectory = "../src/assets/";
-        
-                $fileName = $_FILES["image"]["name"];
-                $image =  "/src/assets/$fileName";
-                $destination = $uploadDirectory . $fileName;
-        
-                move_uploaded_file($_FILES["image"]["tmp_name"],
-                 $destination)
-                ;
-            }
            
-            $stmt = $pdo->prepare("UPDATE animal SET `prenom` = ?,`image`
-             = COALESCE(?, image), `annee_mise_en_circulation` = ?, 
-             `kilometrage` = ?, `titre` = ?, `description` = ? WHERE
-              vehicules_id = ?");
+            $stmt = $pdo->prepare("UPDATE habitat SET `nom` = ?,`description`=?,
+              `commentaire` = ?
+              WHERE
+              idhabitat = ?");
             
             $stmt->execute([
-                $_POST["prenom"],
-                $image,
-                $_POST["annee_mise_en_circulation"],
-                $_POST["kilometrage"],
-                $_POST["titre"],
+                $_POST["nom"],
                 $_POST["description"],
-                $_POST["vehicules_id"]
+                $_POST["commentaire"],
+                $_POST["idhabitat"],
             ]);
     
             if ($stmt->rowCount()) {

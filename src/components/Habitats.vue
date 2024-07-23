@@ -4,10 +4,10 @@
     src="../assets/Default_jungle_habitat_for_animals_0.jpg">
     <div class="d-flex flex-column fill-height justify-center align-center text-white">
       <h1 class="text-h4 font-weight-thin mb-4">
-        Vuetify
+        Zoo Arcadia
       </h1>
       <h4 class="subheading">
-        Build your application today!
+        Habitats
       </h4>
     </div>
   </v-parallax>
@@ -19,16 +19,14 @@
     hide-delimiters
   >
     <v-carousel-item
-      v-for="(slide, i) in slides"
+      v-for="(slide, i) in idanimalphoto"
       :key="i"
     >
       <v-sheet
         height="100%"
       >
         <div class="d-flex fill-height justify-center align-center">
-          <div class="text-h2">
-            {{ slide }} Slide
-          </div>
+          <img :src="slide.image_top" alt="Carousel Image" class="carousel-image" />
         </div>
       </v-sheet>
     </v-carousel-item>
@@ -73,7 +71,7 @@
         :class="['ma-4', selectedClass, 'd-flex', 'flex-column']"
         height="100"
         width="100"
-        @click="(animal=item)"
+        @click="chargeranimal(item)"
       >
           <v-img
             :src="item.image"
@@ -108,21 +106,17 @@ console.log(props.type);
   export default {
     data () {
       return {
-        slides: [
-          'First',
-          'Second',
-          'Third',
-          'Fourth',
-          'Fifth',
-        ],
         idanimal:[],
+        idanimalphoto:[],
         animal:{}
       }
     },
     mounted() {
     this.fetchidanimal();
+    this.fetchidanimalphoto();
   },
     methods: {
+      chargeranimal(item){this.animal=item;this.fetchidanimalphoto(item.idanimal)},
     fetchidanimal() {
       axios.get('http://zoo-project.en.gp/php/animaux.php?action=afficher_animaux',{withcredentials: true})
         .then(response => {
@@ -132,6 +126,7 @@ console.log(props.type);
           this.idanimal.forEach(animal => {
             if (animalid==animal.idanimal){
           this.animal=animal;
+          this.fetchidanimalphoto(animalid);
             }
         });
         console.log(response.data);
@@ -140,6 +135,16 @@ console.log(props.type);
           console.error('Error:', error);
         });
     },
+    fetchidanimalphoto(animalid) {
+      axios.get('http://zoo-project.en.gp/php/animaux.php?action=recuperer_photo&animalid='+animalid,{withcredentials: true})
+        .then(response => {
+          this.idanimalphoto= response.data;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+    },
+    
   },
 
   }
