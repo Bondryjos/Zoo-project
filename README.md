@@ -1,69 +1,32 @@
 # base
-
-## Project setup
+[Lien vers fiche technique](https://github.com/Bondryjos/Zoo-project/blob/main/fichier%20zoo-readme.md.docx).
+## Commande pour installer le projet
 
 ```
-# yarn
-yarn
 
 # npm
 npm install
 
-# pnpm
-pnpm install
-
-# pnpm
-bun install
 ```
 
-### Compiles and hot-reloads for development
+### Commande pour lancer le projet en local 
 
 ```
-# yarn
-yarn dev
 
 # npm
 npm run dev
 
-# pnpm
-pnpm dev
-
-# bun
-bun run dev
 ```
 
-### Compiles and minifies for production
+### Commande pour génerer la production 
 
 ```
-# yarn
-yarn build
 
 # npm
 npm run build
 
-# pnpm
-pnpm build
-
-# bun
-bun run build
 ```
 
-### Lints and fixes files
 
-```
-# yarn
-yarn lint
 
-# npm
-npm run lint
-
-# pnpm
-pnpm lint
-
-# bun
-bun run lint
-```
-
-### Customize configuration
-
-See [Configuration Reference](https://vitejs.dev/config/).
+ 
